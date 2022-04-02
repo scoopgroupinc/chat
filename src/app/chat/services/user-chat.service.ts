@@ -12,7 +12,7 @@ export class UserChatDetailsService {
     private userChatDetailsRepo: Repository<UserChatDetails>,
     @InjectLogger(UserChatDetailsService) private logger: Logger,
   ) {}
-  public async getDetailsForChat(userID: number, toUserID: number) {
+  public async getDetailsForChat(userID: string, toUserID: string) {
     this.logger.debug(
       this.getDetailsForChat.name,
       `userID: ${userID}, toUserID: ${toUserID}`,
@@ -23,5 +23,22 @@ export class UserChatDetailsService {
         toUserID,
       },
     });
+  }
+
+  public async addNewDetailsForChat(userID: string, toUserID: string) {
+    this.logger.debug(
+      this.addNewDetailsForChat.name,
+      `userID: ${userID}, toUserID: ${toUserID}`,
+    );
+    return await this.userChatDetailsRepo.save({
+      userID,
+      toUserID,
+      lastRead: new Date(),
+    });
+  }
+
+  public async getUserConversationList(userID: string) {
+    this.logger.debug(this.addNewDetailsForChat.name, `userID: ${userID}`);
+    return await this.userChatDetailsRepo.find({ userID, lastDeleted: null });
   }
 }
