@@ -6,16 +6,16 @@ import {
   PrimaryGeneratedColumn,
 } from 'typeorm';
 
-@Entity()
+@Entity('message')
 export class Message {
-  @PrimaryGeneratedColumn()
-  id: number;
+  @PrimaryGeneratedColumn({ type: 'bigint' })
+  id: string;
 
   @Column()
-  senderID: number;
+  senderID: string;
 
   @Column()
-  receiverID: number;
+  receiverID: string;
 
   @Column()
   contentType: string;

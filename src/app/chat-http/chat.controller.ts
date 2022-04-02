@@ -51,7 +51,8 @@ export class ChatController {
   })
   public async getChats(@GetUser() user: IUserPayload): Promise<any> {
     // TODO: Implement;
-    throw new Error('Not implemented');
+    return await this.chatService.getUserConversationList(user.userId);
+    // throw new Error('Not implemented');
   }
 
   @Delete('/:ofUserId')
@@ -61,7 +62,7 @@ export class ChatController {
     summary: 'Delete chat conversation with other user',
   })
   public async deleteChat(
-    @Param('ofUserId', ParseIntPipe) ofUserId: number,
+    @Param('ofUserId', ParseIntPipe) ofUserId: string,
     @GetUser() user: IUserPayload,
   ) {
     // TODO: Implement;

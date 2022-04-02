@@ -29,7 +29,7 @@ export default (): {
       type: 'postgres',
       name: 'postgres',
       host: process.env.DB_HOST,
-      port: +process.env.DB_PORT,
+      port: parseInt(process.env.DB_PORT),
       entities: [Message, ConnectedUsers, UserChatDetails],
       username: process.env.DB_USER,
       password: process.env.DB_PASSWORD,

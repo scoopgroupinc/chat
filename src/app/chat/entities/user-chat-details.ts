@@ -2,14 +2,14 @@ import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity()
 export class UserChatDetails {
-  @PrimaryGeneratedColumn()
-  id: number;
+  @PrimaryGeneratedColumn({ type: 'bigint' })
+  id: string;
 
   @Column()
-  userID: number;
+  userID: string;
 
   @Column()
-  toUserID: number;
+  toUserID: string;
 
   @Column()
   lastRead: Date;

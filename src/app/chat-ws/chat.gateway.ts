@@ -44,6 +44,10 @@ export class ChatGateway
         return;
       } else {
         this.connectedUsersService.addUser(user.userId, client.id);
+        this.socketService.server.emit('online', {
+          userId: user.userId,
+          isOnline: true,
+        });
       }
     } catch (err) {
       this.disconnect(client);
@@ -63,6 +67,9 @@ export class ChatGateway
   }
 
   async onModuleDestroy() {
+    await this.connectedUsersService.deleteAllWithInstanceId(
+      'so1254meIns412anc2114eId',
+    );
     console.log('Module destroyed');
   }
 }

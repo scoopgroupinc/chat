@@ -3,7 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 
 import { InjectLogger } from 'src/app/logger/decorators/inject-logger.decorator';
 import { Logger } from 'src/app/logger/logger.service';
-import { Repository } from 'typeorm';
+import { In, Repository } from 'typeorm';
 import { ConnectedUsers } from '../entities/connected-users';
 
 @Injectable()
@@ -33,7 +33,7 @@ export class ConnectedUsersService {
   }
 
   public async addUser(
-    userID: number,
+    userID: string,
     socketID: string,
   ): Promise<ConnectedUsers> {
     this.logger.debug(
@@ -44,5 +44,9 @@ export class ConnectedUsersService {
     const ec2InstanceID = 'abcdxyz';
     const connectedUser = new ConnectedUsers(userID, socketID, ec2InstanceID);
     return this.connectedUserRepo.save(connectedUser);
+  }
+
+  public async getUserSocketId(userId: string): Promise<ConnectedUsers> {
+    return await this.connectedUserRepo.findOne({ userId });
   }
 }
