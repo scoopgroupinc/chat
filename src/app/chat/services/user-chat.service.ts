@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { IUserPayload } from 'src/app/auth/@types/IUserPayload';
 import { InjectLogger } from 'src/app/logger/decorators/inject-logger.decorator';
 import { Logger } from 'src/app/logger/logger.service';
 import { Repository } from 'typeorm';
@@ -40,5 +41,24 @@ export class UserChatDetailsService {
   public async getUserConversationList(userID: string) {
     this.logger.debug(this.addNewDetailsForChat.name, `userID: ${userID}`);
     return await this.userChatDetailsRepo.find({ userID, lastDeleted: null });
+  }
+
+  public async deleteUserChat(ofUserId: string, user: IUserPayload) {
+    this.logger.debug(
+      this.addNewDetailsForChat.name,
+      `userID: ${user.userId}`,
+      `ofUserId: ${ofUserId}`,
+    );
+
+    const userChat = await this.userChatDetailsRepo.findOne({
+      toUserID: ofUserId,
+      userID: user.userId,
+    });
+
+    await this.userChatDetailsRepo.save({
+      ...userChat,
+      lastDeleted: Date.now(),
+    });
+    return 'conversation deleted';
   }
 }

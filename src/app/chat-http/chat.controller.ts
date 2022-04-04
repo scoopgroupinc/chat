@@ -35,11 +35,17 @@ export class ChatController {
   public async getChat(
     @Query('fromDate', ParseDatePipe) fromDate: Date | null,
     @Query('toDate', ParseDatePipe) toDate: Date | null,
-    @Param('ofUserId', ParseIntPipe) ofUserId: number,
+    @Param('ofUserId', ParseIntPipe) ofUserId: string,
     @GetUser() user: IUserPayload,
   ): Promise<any> {
     // TODO: Implement;
-    throw new Error('Not implemented');
+    return await this.chatService.getChatMessages(
+      fromDate,
+      toDate,
+      ofUserId,
+      user,
+    );
+    // throw new Error('Not implemented');
   }
 
   @Get('')
@@ -66,7 +72,8 @@ export class ChatController {
     @GetUser() user: IUserPayload,
   ) {
     // TODO: Implement;
-    throw new Error('Not implemented');
+    return await this.chatService.deleteUserChat(ofUserId, user);
+    // throw new Error('Not implemented');
   }
 
   @Delete('/message/:messageId')
@@ -76,11 +83,12 @@ export class ChatController {
     summary: 'Delete chat message with other user',
   })
   public async deleteMessage(
-    @Param('messageId', ParseIntPipe) messageId: number,
+    @Param('messageId', ParseIntPipe) messageId: string,
     @GetUser() user: IUserPayload,
   ) {
     // TODO: Implement;
-    throw new Error('Not implemented');
+    return await this.chatService.deleteMessage(messageId, user);
+    // throw new Error('Not implemented');
   }
 
   @Patch('/user/:status')
@@ -95,7 +103,8 @@ export class ChatController {
     @GetUser() user: IUserPayload,
   ) {
     // TODO: Implement;
-    throw new Error('Not implemented');
+    return await this.chatService.updateUserStatus(status, user);
+    // throw new Error('Not implemented');
   }
 
   @Get('/user/:userId')
@@ -105,11 +114,12 @@ export class ChatController {
     summary: 'Get user details',
   })
   public async getUserDetails(
-    @Param('userId', ParseIntPipe) userId: number,
+    @Param('userId', ParseIntPipe) userId: string,
     @GetUser() user: IUserPayload,
   ) {
     // TODO: Implement;
-    throw new Error('Not implemented');
+    return await this.chatService.getUserDatails(userId);
+    // throw new Error('Not implemented');
   }
 
   @UseInterceptors(FileInterceptor)

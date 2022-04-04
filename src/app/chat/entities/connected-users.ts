@@ -14,6 +14,9 @@ export class ConnectedUsers {
   @Column()
   ec2InstanceId: string;
 
+  @Column({ nullable: true })
+  lastActive: Date | null;
+
   constructor(userId: string, socketId: string, ec2InstanceId: string) {
     this.userId = userId;
     this.socketId = socketId;

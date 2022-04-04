@@ -1,4 +1,4 @@
 export type IUserPayload = {
   userId: string;
-  email: string;
+  email?: string;
 };

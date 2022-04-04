@@ -1,9 +1,11 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { IUserPayload } from 'src/app/auth/@types/IUserPayload';
 
 import { InjectLogger } from 'src/app/logger/decorators/inject-logger.decorator';
 import { Logger } from 'src/app/logger/logger.service';
-import { In, Repository } from 'typeorm';
+import { Repository } from 'typeorm';
+import { UserStatusTypeForChat } from '../@types/UserStatusTypeForChat';
 import { ConnectedUsers } from '../entities/connected-users';
 
 @Injectable()
@@ -48,5 +50,33 @@ export class ConnectedUsersService {
 
   public async getUserSocketId(userId: string): Promise<ConnectedUsers> {
     return await this.connectedUserRepo.findOne({ userId });
+  }
+
+  public async updateUserStatus(
+    status: UserStatusTypeForChat,
+    user: IUserPayload,
+  ) {
+    const connectedUser = await this.connectedUserRepo.findOne({
+      userId: user.userId,
+    });
+    let response;
+    if (status.toLowerCase() === UserStatusTypeForChat.ONLINE.toLowerCase()) {
+      response = await this.connectedUserRepo.save({
+        ...connectedUser,
+        lastActive: null,
+      });
+    }
+    if (status.toLowerCase() === UserStatusTypeForChat.OFFLINE.toLowerCase()) {
+      response = await this.connectedUserRepo.save({
+        ...connectedUser,
+        lastActive: new Date(),
+      });
+    }
+    return response;
+  }
+
+  public async getUserDatails(userId: string) {
+    const { lastActive } = await this.connectedUserRepo.findOne({ userId });
+    return lastActive;
   }
 }
