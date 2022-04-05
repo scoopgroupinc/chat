@@ -3,6 +3,7 @@ import { PassportModule } from '@nestjs/passport';
 import { JwtModule } from '@nestjs/jwt';
 import { LoggerModule } from '../logger/logger.module';
 import { AuthService } from './auth.service';
+import { config } from 'src/environments/dev/config';
 
 @Module({
   imports: [
@@ -12,7 +13,7 @@ import { AuthService } from './auth.service';
     PassportModule.register({ defaultStrategy: 'jwt' }),
     JwtModule.register({
       secret: process.env.JWT_SECRET,
-      signOptions: { expiresIn: '1d' },
+      signOptions: { expiresIn: config.jwtExpiration },
     }),
   ],
   providers: [AuthService],

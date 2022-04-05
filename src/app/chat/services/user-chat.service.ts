@@ -39,14 +39,14 @@ export class UserChatDetailsService {
   }
 
   public async getUserConversationList(userID: string) {
-    this.logger.debug(this.addNewDetailsForChat.name, `userID: ${userID}`);
+    this.logger.debug(this.getUserConversationList.name, `userID: ${userID}`);
     return await this.userChatDetailsRepo.find({ userID, lastDeleted: null });
   }
 
   public async deleteUserChat(ofUserId: string, user: IUserPayload) {
     this.logger.debug(
-      this.addNewDetailsForChat.name,
-      `userID: ${user.userId}`,
+      this.deleteUserChat.name,
+      `user: ${user}`,
       `ofUserId: ${ofUserId}`,
     );
 

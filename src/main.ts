@@ -18,6 +18,6 @@ async function bootstrap() {
 
   const document = SwaggerModule.createDocument(app, swaggerConfig);
   SwaggerModule.setup('api/chat/docs', app, document);
-  await app.listen(7200);
+  await app.listen(process.env.PORT);
 }
 bootstrap();

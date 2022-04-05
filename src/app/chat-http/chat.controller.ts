@@ -35,17 +35,15 @@ export class ChatController {
   public async getChat(
     @Query('fromDate', ParseDatePipe) fromDate: Date | null,
     @Query('toDate', ParseDatePipe) toDate: Date | null,
-    @Param('ofUserId', ParseIntPipe) ofUserId: string,
+    @Param('ofUserId') ofUserId: string,
     @GetUser() user: IUserPayload,
   ): Promise<any> {
-    // TODO: Implement;
     return await this.chatService.getChatMessages(
       fromDate,
       toDate,
       ofUserId,
       user,
     );
-    // throw new Error('Not implemented');
   }
 
   @Get('')
@@ -56,9 +54,7 @@ export class ChatController {
       'Api should return list of chats conversations. it includes latest message and other user details and no of unread messages of that conversation.',
   })
   public async getChats(@GetUser() user: IUserPayload): Promise<any> {
-    // TODO: Implement;
     return await this.chatService.getUserConversationList(user.userId);
-    // throw new Error('Not implemented');
   }
 
   @Delete('/:ofUserId')
@@ -68,12 +64,10 @@ export class ChatController {
     summary: 'Delete chat conversation with other user',
   })
   public async deleteChat(
-    @Param('ofUserId', ParseIntPipe) ofUserId: string,
+    @Param('ofUserId') ofUserId: string,
     @GetUser() user: IUserPayload,
   ) {
-    // TODO: Implement;
     return await this.chatService.deleteUserChat(ofUserId, user);
-    // throw new Error('Not implemented');
   }
 
   @Delete('/message/:messageId')
@@ -83,12 +77,10 @@ export class ChatController {
     summary: 'Delete chat message with other user',
   })
   public async deleteMessage(
-    @Param('messageId', ParseIntPipe) messageId: string,
+    @Param('messageId') messageId: string,
     @GetUser() user: IUserPayload,
   ) {
-    // TODO: Implement;
     return await this.chatService.deleteMessage(messageId, user);
-    // throw new Error('Not implemented');
   }
 
   @Patch('/user/:status')
@@ -102,9 +94,7 @@ export class ChatController {
     status: UserStatusTypeForChat,
     @GetUser() user: IUserPayload,
   ) {
-    // TODO: Implement;
     return await this.chatService.updateUserStatus(status, user);
-    // throw new Error('Not implemented');
   }
 
   @Get('/user/:userId')
@@ -114,12 +104,10 @@ export class ChatController {
     summary: 'Get user details',
   })
   public async getUserDetails(
-    @Param('userId', ParseIntPipe) userId: string,
+    @Param('userId') userId: string,
     @GetUser() user: IUserPayload,
   ) {
-    // TODO: Implement;
     return await this.chatService.getUserDatails(userId);
-    // throw new Error('Not implemented');
   }
 
   @UseInterceptors(FileInterceptor)
