@@ -14,6 +14,7 @@ const defaultConfig: IEnvironmentConfigType = {
   supportEmail: 'noreply@scoop.love',
   logoUrl: 'https://www.domain.com/media/images/platform/WebLogo.png',
   defaultNoOfMessageToSend: 50,
+  jwtExpiration: '1d',
 };
 
 if (process.env.NODE_ENV === EnvironmentTypeEnum.PRODUCTION) {
