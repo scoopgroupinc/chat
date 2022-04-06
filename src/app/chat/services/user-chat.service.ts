@@ -31,10 +31,20 @@ export class UserChatDetailsService {
       this.addNewDetailsForChat.name,
       `userID: ${userID}, toUserID: ${toUserID}`,
     );
+
+    const chat = await this.userChatDetailsRepo.findOne({ userID, toUserID });
+    const lastRead = new Date();
+    if (chat) {
+      return await this.userChatDetailsRepo.save({
+        ...chat,
+        lastRead,
+      });
+    }
+
     return await this.userChatDetailsRepo.save({
       userID,
       toUserID,
-      lastRead: new Date(),
+      lastRead,
     });
   }
 
