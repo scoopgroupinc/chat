@@ -1,6 +1,12 @@
 import { IUserPayload } from 'src/app/auth/@types/IUserPayload';
-import { config } from 'src/environments/dev/config';
-import { AbstractRepository, Between, EntityRepository } from 'typeorm';
+import { config } from 'src/environments/config';
+import {
+  AbstractRepository,
+  Between,
+  EntityRepository,
+  LessThanOrEqual,
+  MoreThanOrEqual,
+} from 'typeorm';
 import { MessageContentTypes } from '../@types/MessageContentTypes';
 import { Message } from '../entities/message';
 
@@ -27,14 +33,23 @@ export class MessageRepository extends AbstractRepository<Message> {
       senderID: user.userId,
     };
 
-    if (toDate && fromDate) query.createdAt = Between(fromDate, toDate);
-    else if (fromDate) query.createdAt = fromDate;
-    else if (toDate) query.createdAt = toDate;
-
-    const messages = await this.repository.find({
+    const finalQuery: { where: object; take?: number } = {
       where: query,
-      take: config.defaultNoOfMessageToSend,
-    });
+    };
+
+    if (toDate && fromDate) {
+      query.createdAt = Between(fromDate, toDate);
+    } else if (fromDate) {
+      query.createdAt = MoreThanOrEqual(fromDate);
+      finalQuery.take = config.defaultNoOfMessageToSend;
+    } else if (toDate) {
+      query.createdAt = LessThanOrEqual(toDate);
+      finalQuery.take = config.defaultNoOfMessageToSend;
+    }
+
+    finalQuery.where = query;
+
+    const messages = await this.repository.find(finalQuery);
     return messages;
   }
 

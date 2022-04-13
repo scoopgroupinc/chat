@@ -27,8 +27,7 @@ export class ChatService {
     @InjectLogger(ChatService) private logger: Logger,
   ) {}
 
-  @SubscribeMessage('addMessage')
-  async addMessage(@MessageBody() payload) {
+  async addMessage(payload) {
     //todo: check if this is a match
     this.logger.debug(this.addMessage.name, `payload: ${payload}`);
     const chatDetails = await this.userChatDetailsService.getDetailsForChat(
@@ -45,23 +44,16 @@ export class ChatService {
     const { socketId } = await this.connectedUsersService.getUserSocketId(
       payload.toUserID,
     );
-    this.socketService.server
-      .to(socketId)
-      .emit('receiveMessage', payload.content, (response) => {
-        response({
-          received: true,
-        });
-      });
+
+    return socketId;
   }
 
-  @SubscribeMessage('onTyping')
   async typingMessage(@MessageBody() payload) {
     this.logger.debug(this.typingMessage.name, `payload: ${payload}`);
     const { socketId } = await this.connectedUsersService.getUserSocketId(
       payload.toUserID,
     );
-
-    this.socketService.server.to(socketId).emit('isTyping', payload);
+    return socketId;
   }
 
   async getChatMessages(
@@ -99,7 +91,7 @@ export class ChatService {
   async deleteUserChat(ofUserId: string, user: IUserPayload) {
     this.logger.debug(
       this.getUserDatails.name,
-      `status: ${status}, user: ${user}`,
+      `ofUserId: ${ofUserId}, user: ${user}`,
     );
     return await this.userChatDetailsService.deleteUserChat(ofUserId, user);
   }
@@ -113,7 +105,6 @@ export class ChatService {
     const { socketId } = await this.connectedUsersService.getUserSocketId(
       message.receiverID,
     );
-
     this.socketService.server.to(socketId).emit('deletedMessage', message);
 
     return 'message deleted';
