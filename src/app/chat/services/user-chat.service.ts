@@ -41,11 +41,13 @@ export class UserChatDetailsService {
       });
     }
 
-    return await this.userChatDetailsRepo.save({
+    const newChatDetails = await this.userChatDetailsRepo.create({
       userID,
       toUserID,
       lastRead,
     });
+
+    return await this.userChatDetailsRepo.save(newChatDetails);
   }
 
   public async getUserConversationList(userID: string) {
