@@ -29,7 +29,8 @@ export class ChatController {
   @Get('/:ofUserId')
   @ApiTags('chats')
   @ApiOperation({
-    description: `Get chat message of user with other user. Provide one of fromDate or toDate. If both are provided, fromDate will be used. API will return ${config.defaultNoOfMessageToSend} messages.`,
+    description: `Get chat message of user with other user. Provide one of fromDate or toDate. If both are provided, API will return all messages within date range.
+     If one is provided then API will return ${config.defaultNoOfMessageToSend} message within range`,
     summary: 'Get chat message of user with other user',
   })
   public async getChat(
