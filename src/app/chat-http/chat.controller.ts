@@ -29,17 +29,22 @@ export class ChatController {
   @Get('/:ofUserId')
   @ApiTags('chats')
   @ApiOperation({
-    description: `Get chat message of user with other user. Provide one of fromDate or toDate. If both are provided, fromDate will be used. API will return ${config.defaultNoOfMessageToSend} messages.`,
+    description: `Get chat message of user with other user. Provide one of fromDate or toDate. If both are provided, API will return all messages within date range.
+     If one is provided then API will return ${config.defaultNoOfMessageToSend} message within range`,
     summary: 'Get chat message of user with other user',
   })
   public async getChat(
     @Query('fromDate', ParseDatePipe) fromDate: Date | null,
     @Query('toDate', ParseDatePipe) toDate: Date | null,
-    @Param('ofUserId', ParseIntPipe) ofUserId: number,
+    @Param('ofUserId') ofUserId: string,
     @GetUser() user: IUserPayload,
   ): Promise<any> {
-    // TODO: Implement;
-    throw new Error('Not implemented');
+    return await this.chatService.getChatMessages(
+      fromDate,
+      toDate,
+      ofUserId,
+      user,
+    );
   }
 
   @Get('')
@@ -50,8 +55,7 @@ export class ChatController {
       'Api should return list of chats conversations. it includes latest message and other user details and no of unread messages of that conversation.',
   })
   public async getChats(@GetUser() user: IUserPayload): Promise<any> {
-    // TODO: Implement;
-    throw new Error('Not implemented');
+    return await this.chatService.getUserConversationList(user.userId);
   }
 
   @Delete('/:ofUserId')
@@ -61,11 +65,10 @@ export class ChatController {
     summary: 'Delete chat conversation with other user',
   })
   public async deleteChat(
-    @Param('ofUserId', ParseIntPipe) ofUserId: number,
+    @Param('ofUserId') ofUserId: string,
     @GetUser() user: IUserPayload,
   ) {
-    // TODO: Implement;
-    throw new Error('Not implemented');
+    return await this.chatService.deleteUserChat(ofUserId, user);
   }
 
   @Delete('/message/:messageId')
@@ -75,11 +78,10 @@ export class ChatController {
     summary: 'Delete chat message with other user',
   })
   public async deleteMessage(
-    @Param('messageId', ParseIntPipe) messageId: number,
+    @Param('messageId') messageId: string,
     @GetUser() user: IUserPayload,
   ) {
-    // TODO: Implement;
-    throw new Error('Not implemented');
+    return await this.chatService.deleteMessage(messageId, user);
   }
 
   @Patch('/user/:status')
@@ -93,8 +95,7 @@ export class ChatController {
     status: UserStatusTypeForChat,
     @GetUser() user: IUserPayload,
   ) {
-    // TODO: Implement;
-    throw new Error('Not implemented');
+    return await this.chatService.updateUserStatus(status, user);
   }
 
   @Get('/user/:userId')
@@ -104,11 +105,10 @@ export class ChatController {
     summary: 'Get user details',
   })
   public async getUserDetails(
-    @Param('userId', ParseIntPipe) userId: number,
+    @Param('userId') userId: string,
     @GetUser() user: IUserPayload,
   ) {
-    // TODO: Implement;
-    throw new Error('Not implemented');
+    return await this.chatService.getUserDatails(userId);
   }
 
   @UseInterceptors(FileInterceptor)

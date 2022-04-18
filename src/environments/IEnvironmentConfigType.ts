@@ -6,4 +6,5 @@ export interface IEnvironmentConfigType {
   logoUrl: string;
   supportEmail: string;
   defaultNoOfMessageToSend: number;
+  jwtExpiration: string;
 }

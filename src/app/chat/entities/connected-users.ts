@@ -1,12 +1,12 @@
 import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 
-@Entity()
+@Entity('connected-users')
 export class ConnectedUsers {
-  @PrimaryGeneratedColumn()
-  id: number;
+  @PrimaryGeneratedColumn({ type: 'bigint' })
+  id: string;
 
   @Column()
-  userId: number;
+  userId: string;
 
   @Column()
   socketId: string;
@@ -14,7 +14,10 @@ export class ConnectedUsers {
   @Column()
   ec2InstanceId: string;
 
-  constructor(userId: number, socketId: string, ec2InstanceId: string) {
+  @Column({ nullable: true })
+  lastActive: Date | null;
+
+  constructor(userId: string, socketId: string, ec2InstanceId: string) {
     this.userId = userId;
     this.socketId = socketId;
     this.ec2InstanceId = ec2InstanceId;

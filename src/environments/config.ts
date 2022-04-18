@@ -11,9 +11,10 @@ const defaultConfig: IEnvironmentConfigType = {
   allowedOrigins: ['https://www.domain.com'],
   siteUrl: 'https://www.domain.com/',
   fileMaxSizeInBytes: 24576000, // 24MB
-  supportEmail: 'abc@xyz.com',
+  supportEmail: 'noreply@scoop.love',
   logoUrl: 'https://www.domain.com/media/images/platform/WebLogo.png',
   defaultNoOfMessageToSend: 50,
+  jwtExpiration: '1d',
 };
 
 if (process.env.NODE_ENV === EnvironmentTypeEnum.PRODUCTION) {
