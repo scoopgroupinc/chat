@@ -69,7 +69,7 @@ If you run server locally goto: `http://localhost:{PORT}/api/chat/docs/`
 1. Run `npm install `
 2. make sure your IP address has been added to Instaclustr
 3. ensure you .env.dev has the same variables as .env.sample
-4. Run `npm run start:dev`
+4. Run `npm run watch:dev`
 
 ## Support
 
