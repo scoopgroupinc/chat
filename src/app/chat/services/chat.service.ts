@@ -12,6 +12,7 @@ import { Logger } from 'src/app/logger/logger.service';
 import { UserStatusTypeForChat } from '../@types/UserStatusTypeForChat';
 import { MessageRepository } from '../repositories/message.repository';
 import { ConnectedUsersService } from './connected-users.service';
+import { NotificationService } from './notification.service';
 import { SocketService } from './socket.service';
 import { UserChatDetailsService } from './user-chat.service';
 
@@ -22,6 +23,7 @@ export class ChatService {
     private socketService: SocketService,
     private connectedUsersService: ConnectedUsersService,
     private userChatDetailsService: UserChatDetailsService,
+    private notificationService: NotificationService,
     @InjectRepository(MessageRepository)
     private messageRepository: MessageRepository,
     @InjectLogger(ChatService) private logger: Logger,
@@ -45,6 +47,9 @@ export class ChatService {
       payload.toUserID,
     );
 
+    if (!socketId) {
+      return await this.notificationService.sendNotification(payload);
+    }
     return socketId;
   }
 

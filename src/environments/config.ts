@@ -15,6 +15,9 @@ const defaultConfig: IEnvironmentConfigType = {
   logoUrl: 'https://www.domain.com/media/images/platform/WebLogo.png',
   defaultNoOfMessageToSend: 50,
   jwtExpiration: '1d',
+  kafkaBrokers: ['127.0.0.1:39094'],
+  clientId: 'CHATCLIENTID',
+  consumerGroupId: ''
 };
 
 if (process.env.NODE_ENV === EnvironmentTypeEnum.PRODUCTION) {
