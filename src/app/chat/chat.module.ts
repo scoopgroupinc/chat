@@ -7,6 +7,7 @@ import { UserChatDetails } from './entities/user-chat-details';
 import { MessageRepository } from './repositories/message.repository';
 import { ChatService } from './services/chat.service';
 import { ConnectedUsersService } from './services/connected-users.service';
+import { NotificationService } from './services/notification.service';
 import { SocketService } from './services/socket.service';
 import { UserChatDetailsService } from './services/user-chat.service';
 
@@ -24,6 +25,7 @@ import { UserChatDetailsService } from './services/user-chat.service';
         UserChatDetailsService,
         SocketService,
         ChatService,
+        NotificationService
       ],
     }),
   ],
@@ -33,12 +35,14 @@ import { UserChatDetailsService } from './services/user-chat.service';
     ConnectedUsersService,
     UserChatDetailsService,
     ChatService,
+    NotificationService
   ],
   exports: [
     SocketService,
     ConnectedUsersService,
     UserChatDetailsService,
     ChatService,
+    NotificationService
   ],
 })
 export class ChatModule {}

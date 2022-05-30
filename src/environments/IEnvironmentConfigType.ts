@@ -7,4 +7,7 @@ export interface IEnvironmentConfigType {
   supportEmail: string;
   defaultNoOfMessageToSend: number;
   jwtExpiration: string;
+  kafkaBrokers: string[];
+  clientId: string;
+  consumerGroupId: string;
 }
