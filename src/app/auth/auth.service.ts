@@ -13,12 +13,12 @@ export class AuthService {
 
   public async validateUser(token: string): Promise<IUserPayload> {
     this.logger.debug(this.validateUser.name, `token: ${token}`);
-    const { userId, email } = await this.jwtService.verifyAsync(token);
 
-    if (!(userId && email)) throw new UnauthorizedException();
+    const result: any = await this.jwtService.decode(token.split(' ')[1]);
+    if (!result) throw new UnauthorizedException();
     return {
-      userId,
-      email,
+      userId: result.userId,
+      email: result.email,
     };
   }
 }

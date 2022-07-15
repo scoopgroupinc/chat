@@ -36,26 +36,28 @@ export class ChatController {
   public async getChat(
     @Query('fromDate', ParseDatePipe) fromDate: Date | null,
     @Query('toDate', ParseDatePipe) toDate: Date | null,
+    @Query('page') page: number | null,
     @Param('ofUserId') ofUserId: string,
     @GetUser() user: IUserPayload,
   ): Promise<any> {
     return await this.chatService.getChatMessages(
       fromDate,
       toDate,
+      page,
       ofUserId,
       user,
     );
   }
 
-  @Get('')
+  @Get('/chat/:userId')
   @ApiTags('chats')
   @ApiOperation({
     summary: 'Get list of chats conversations',
     description:
       'Api should return list of chats conversations. it includes latest message and other user details and no of unread messages of that conversation.',
   })
-  public async getChats(@GetUser() user: IUserPayload): Promise<any> {
-    return await this.chatService.getUserConversationList(user.userId);
+  public async getChats(@Param('userId') userId: string): Promise<any> {
+    return await this.chatService.getUserConversationList(userId);
   }
 
   @Delete('/:ofUserId')
@@ -104,10 +106,7 @@ export class ChatController {
     description: `Get user details.`,
     summary: 'Get user details',
   })
-  public async getUserDetails(
-    @Param('userId') userId: string,
-    @GetUser() user: IUserPayload,
-  ) {
+  public async getUserDetails(@Param('userId') userId: string) {
     return await this.chatService.getUserDatails(userId);
   }
 

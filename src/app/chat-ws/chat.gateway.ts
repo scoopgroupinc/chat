@@ -47,11 +47,7 @@ export class ChatGateway
         this.disconnect(client);
         return;
       } else {
-        this.connectedUsersService.addUser(user.userId, client.id);
-        this.socketService.server.emit('online', {
-          userId: user.userId,
-          isOnline: true,
-        });
+        await this.connectedUsersService.addUser(user.userId, client.id);
       }
     } catch (err) {
       this.disconnect(client);
@@ -62,6 +58,7 @@ export class ChatGateway
 
   async handleDisconnect(client: Socket) {
     await this.connectedUsersService.deleteUserWithSocketId(client.id);
+    console.log(client.id, 'disconnected');
     client.disconnect();
   }
 
@@ -79,21 +76,31 @@ export class ChatGateway
 
   @SubscribeMessage('addMessage')
   async addMessage(@MessageBody() payload) {
+    payload.userID = payload[0].user._id;
     const socketId = await this.chatService.addMessage(payload);
 
     this.socketService.server
       .to(socketId)
-      .emit('receiveMessage', payload.content, (response) => {
-        response({
-          received: true,
-        });
-      });
+      .emit('receiveMessage', payload.content);
   }
 
   @SubscribeMessage('onTyping')
-  async typingMessage(@MessageBody() payload) {
+  async typingMessage(@MessageBody() payload: any) {
     const socketId = await this.chatService.typingMessage(payload);
 
-    this.socketService.server.to(socketId).emit('isTyping', payload);
+    await this.socketService.server.to(socketId).emit('isTyping', payload);
+  }
+
+  @SubscribeMessage('online')
+  async checkUserOnline(@MessageBody() payload: any) {
+    const { user, checkedUser } = await this.chatService.checkUserOnline(
+      payload,
+    );
+
+    let isOnline = undefined;
+    if (checkedUser) isOnline = true;
+    await this.socketService.server
+      .to(user.socketId)
+      .emit('isOnline', isOnline);
   }
 }
