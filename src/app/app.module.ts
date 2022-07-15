@@ -13,21 +13,6 @@ import { config } from 'src/environments/config';
 
 @Module({
   imports: [
-    ClientsModule.register([
-      {
-        name: 'CHAT_NOTIFICATION',
-        transport: Transport.KAFKA,
-        options: {
-          client: {
-            clientId: config.clientId,
-            brokers: config.kafkaBrokers,
-          },
-          consumer: {
-            groupId: config.consumerGroupId,
-          },
-        },
-      },
-    ]),
     ConfigModule.forRoot({
       isGlobal: true,
       envFilePath: `.env.${process.env.NODE_ENV}`,
@@ -35,9 +20,28 @@ import { config } from 'src/environments/config';
       load: [typeormConfig],
     }),
     TypeOrmModule.forRootAsync({
-      useFactory: (configService: ConfigService) =>
-        configService.get('typeorm'),
+      imports: [ConfigModule],
       inject: [ConfigService],
+      useFactory: (database: ConfigService) => ({
+        ...database.get('typeorm'),
+        host: process.env.DB_HOST1,
+      }),
+    }),
+    TypeOrmModule.forRootAsync({
+      imports: [ConfigModule],
+      inject: [ConfigService],
+      useFactory: (database: ConfigService) => ({
+        ...database.get('typeorm'),
+        host: process.env.DB_HOST2,
+      }),
+    }),
+    TypeOrmModule.forRootAsync({
+      imports: [ConfigModule],
+      inject: [ConfigService],
+      useFactory: (database: ConfigService) => ({
+        ...database.get('typeorm'),
+        host: process.env.DB_HOST3,
+      }),
     }),
     LoggerModule.forFeature({
       consumers: [RequestLoggingMiddleware],

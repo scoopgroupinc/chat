@@ -29,24 +29,24 @@ export class ChatService {
     @InjectLogger(ChatService) private logger: Logger,
   ) {}
 
-  async addMessage(payload) {
+  async addMessage(payload): Promise<string> {
     //todo: check if this is a match
     this.logger.debug(this.addMessage.name, `payload: ${payload}`);
     const chatDetails = await this.userChatDetailsService.getDetailsForChat(
       payload.userID,
-      payload.toUserID,
+      payload.receiverID,
     );
     if (!chatDetails) {
       await this.userChatDetailsService.addNewDetailsForChat(
         payload.userID,
-        payload.toUserID,
+        payload.receiverID,
       );
     }
+    payload.senderID = payload.userID;
     await this.messageRepository.addMessageToDb(payload);
     const { socketId } = await this.connectedUsersService.getUserSocketId(
-      payload.toUserID,
+      payload.receiverID,
     );
-
     if (!socketId) {
       return await this.notificationService.sendNotification(payload);
     }
@@ -61,15 +61,29 @@ export class ChatService {
     return socketId;
   }
 
+  async checkUserOnline(payload) {
+    const user = await this.connectedUsersService.getUserSocketId(
+      payload.userId,
+    );
+    const checkedUser = await this.connectedUsersService.getUserSocketId(
+      payload.checkedUserId,
+    );
+
+    return { user, checkedUser };
+  }
+
   async getChatMessages(
     fromDate: Date,
     toDate: Date,
+    page: number,
     ofUserId: string,
     user: IUserPayload,
   ) {
+    console.log(ofUserId, user);
     return await this.messageRepository.getChatMessages(
       fromDate,
       toDate,
+      page,
       ofUserId,
       user,
     );
@@ -89,7 +103,7 @@ export class ChatService {
   }
 
   async getUserDatails(userId: string) {
-    this.logger.debug(this.typingMessage.name, `userId: ${userId}`);
+    this.logger.debug(this.getUserDatails.name, `userId: ${userId}`);
     return await this.connectedUsersService.getUserDatails(userId);
   }
 

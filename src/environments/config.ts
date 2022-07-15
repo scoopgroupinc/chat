@@ -8,7 +8,7 @@ let config: IEnvironmentConfigType;
 
 const defaultConfig: IEnvironmentConfigType = {
   production: false,
-  allowedOrigins: ['https://www.domain.com'],
+  allowedOrigins: ['*'],
   siteUrl: 'https://www.domain.com/',
   fileMaxSizeInBytes: 24576000, // 24MB
   supportEmail: 'noreply@scoop.love',

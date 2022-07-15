@@ -5,14 +5,33 @@ import { LoggerModule } from '../logger/logger.module';
 import { ConnectedUsers } from './entities/connected-users';
 import { UserChatDetails } from './entities/user-chat-details';
 import { MessageRepository } from './repositories/message.repository';
+// import { UserRepository } from './repositories/user.repository';
 import { ChatService } from './services/chat.service';
 import { ConnectedUsersService } from './services/connected-users.service';
 import { NotificationService } from './services/notification.service';
 import { SocketService } from './services/socket.service';
 import { UserChatDetailsService } from './services/user-chat.service';
+import { ClientsModule, Transport } from '@nestjs/microservices';
+import { config } from 'src/environments/config';
+
 
 @Module({
   imports: [
+    ClientsModule.register([
+      {
+        name: 'CHAT_NOTIFICATION',
+        transport: Transport.KAFKA,
+        options: {
+          client: {
+            clientId: config.clientId,
+            brokers: config.kafkaBrokers,
+          },
+          consumer: {
+            groupId: config.consumerGroupId,
+          },
+        },
+      },
+    ]),
     TypeOrmModule.forFeature([
       ConnectedUsers,
       UserChatDetails,
@@ -35,7 +54,7 @@ import { UserChatDetailsService } from './services/user-chat.service';
     ConnectedUsersService,
     UserChatDetailsService,
     ChatService,
-    NotificationService
+    NotificationService,
   ],
   exports: [
     SocketService,
