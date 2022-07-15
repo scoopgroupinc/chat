@@ -1,6 +1,7 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, PrimaryGeneratedColumn, Unique } from 'typeorm';
 
 @Entity('connected-users')
+@Unique(['userId'])
 export class ConnectedUsers {
   @PrimaryGeneratedColumn({ type: 'bigint' })
   id: string;
@@ -11,7 +12,7 @@ export class ConnectedUsers {
   @Column()
   socketId: string;
 
-  @Column()
+  @Column({ nullable: true })
   ec2InstanceId: string;
 
   @Column({ nullable: true })

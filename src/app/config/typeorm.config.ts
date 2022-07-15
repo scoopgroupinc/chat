@@ -1,7 +1,6 @@
 import { TypeOrmModuleOptions } from '@nestjs/typeorm';
 import { ConnectedUsers } from '../chat/entities/connected-users';
 import { Message } from '../chat/entities/message';
-import { User } from '../chat/entities/user';
 import { UserChatDetails } from '../chat/entities/user-chat-details';
 
 export default (): {
@@ -10,7 +9,7 @@ export default (): {
   if (!process.env.NODE_ENV) {
     throw new Error('NODE_ENV is not defined');
   }
-  if (!process.env.DB_HOST) {
+  if (!process.env.DB_HOST1) {
     throw new Error('DB_HOST is not defined');
   }
   if (!process.env.DB_PORT) {
@@ -29,9 +28,9 @@ export default (): {
     typeorm: {
       type: 'postgres',
       name: 'postgres',
-      host: process.env.DB_HOST,
+      host: process.env.DB_HOST2,
       port: parseInt(process.env.DB_PORT),
-      entities: [Message, ConnectedUsers, UserChatDetails, User],
+      entities: [Message, ConnectedUsers, UserChatDetails],
       username: process.env.DB_USER,
       password: process.env.DB_PASSWORD,
       database: process.env.DB_NAME,

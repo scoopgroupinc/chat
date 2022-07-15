@@ -2,7 +2,7 @@ import { IEnvironmentConfigType } from '../IEnvironmentConfigType';
 
 export const config: Partial<IEnvironmentConfigType> = {
   production: true,
-  allowedOrigins: ['https://dev.domain.com', 'http://localhost:3000'],
+  allowedOrigins: ['*'],
   siteUrl: 'https://www.domain.com/',
   fileMaxSizeInBytes: 24576000, // 24MB
   supportEmail: 'abc3@xyz.com',

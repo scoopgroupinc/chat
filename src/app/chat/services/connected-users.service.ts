@@ -43,9 +43,23 @@ export class ConnectedUsersService {
       `userID: ${userID}, socketID: ${socketID}`,
     );
     // TODO: get appropriate EC2 instance ID
+
     const ec2InstanceID = 'abcdxyz';
-    const connectedUser = new ConnectedUsers(userID, socketID, ec2InstanceID);
-    return this.connectedUserRepo.save(connectedUser);
+    const connectedUser = await this.connectedUserRepo.findOne({
+      userId: userID,
+    });
+    if (!connectedUser) {
+      const newConnectedUser = new ConnectedUsers(
+        userID,
+        socketID,
+        ec2InstanceID,
+      );
+      return await this.connectedUserRepo.save(newConnectedUser);
+    }
+    await this.connectedUserRepo.update(
+      { userId: userID },
+      { socketId: socketID },
+    );
   }
 
   public async getUserSocketId(userId: string): Promise<ConnectedUsers> {
@@ -63,7 +77,7 @@ export class ConnectedUsersService {
     if (status.toLowerCase() === UserStatusTypeForChat.ONLINE.toLowerCase()) {
       response = await this.connectedUserRepo.save({
         ...connectedUser,
-        lastActive: null,
+        lastActive: new Date(),
       });
     }
     if (status.toLowerCase() === UserStatusTypeForChat.OFFLINE.toLowerCase()) {
@@ -76,7 +90,7 @@ export class ConnectedUsersService {
   }
 
   public async getUserDatails(userId: string) {
-    const { lastActive } = await this.connectedUserRepo.findOne({ userId });
-    return lastActive;
+    const user = await this.connectedUserRepo.findOne({ userId });
+    return user?.lastActive ?? undefined;
   }
 }
