@@ -23,7 +23,7 @@ async function bootstrap() {
   app.enableCors({
     origin: config.allowedOrigins,
   });
-  app.setGlobalPrefix('api/chat');
+  app.setGlobalPrefix('api/v1/chats');
 
   const swaggerConfig = new DocumentBuilder()
     .setTitle('Chat API')
