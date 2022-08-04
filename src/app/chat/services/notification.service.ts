@@ -1,5 +1,5 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { ClientKafka } from '@nestjs/microservices';
+import { ClientProxy } from '@nestjs/microservices';
 import { InjectRepository } from '@nestjs/typeorm';
 import { INotification } from '../@types/INotification';
 import { UserRepository } from '../repositories/user.repository';
@@ -8,7 +8,7 @@ import { UserRepository } from '../repositories/user.repository';
 export class NotificationService {
   constructor(
     @InjectRepository(UserRepository) private userRepository: UserRepository,
-    @Inject('CHAT_NOTIFICATION') private readonly client: ClientKafka,
+    @Inject('CHAT_NOTIFICATION') private readonly client: ClientProxy,
   ) {}
 
   async sendNotification(payload) {
