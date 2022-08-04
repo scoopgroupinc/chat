@@ -10,4 +10,6 @@ export interface IEnvironmentConfigType {
   kafkaBrokers: string[];
   clientId: string;
   consumerGroupId: string;
+  consumerUrl: string;
+  producerUrl: string;
 }

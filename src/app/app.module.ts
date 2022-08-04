@@ -10,21 +10,17 @@ import { LoggerModule } from './logger/logger.module';
 import { RequestLoggingMiddleware } from './logger/middlewares/request-logging.middleware';
 import { ClientsModule, Transport } from '@nestjs/microservices';
 import { config } from 'src/environments/config';
+import { SqsClient } from '@gemunion/nestjs-sqs';
 
 @Module({
   imports: [
     ClientsModule.register([
       {
         name: 'CHAT_NOTIFICATION',
-        transport: Transport.KAFKA,
+        customClass: SqsClient,
         options: {
-          client: {
-            clientId: config.clientId,
-            brokers: config.kafkaBrokers,
-          },
-          consumer: {
-            groupId: config.consumerGroupId,
-          },
+          consumerUrl: config.producerUrl,
+          producerUrl: config.consumerUrl,
         },
       },
     ]),
