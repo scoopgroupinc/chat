@@ -17,7 +17,10 @@ const defaultConfig: IEnvironmentConfigType = {
   jwtExpiration: '1d',
   kafkaBrokers: ['127.0.0.1:39094'],
   clientId: 'CHATCLIENTID',
-  consumerGroupId: ''
+  consumerGroupId: '',
+  consumerUrl: '',
+  producerUrl:
+    'https://sqs.us-east-1.amazonaws.com/074051434629/scoop-common-queue',
 };
 
 if (process.env.NODE_ENV === EnvironmentTypeEnum.PRODUCTION) {
