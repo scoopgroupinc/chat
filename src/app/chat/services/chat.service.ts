@@ -1,10 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import {
-  ConnectedSocket,
-  MessageBody,
-  SubscribeMessage,
-} from '@nestjs/websockets';
+import { MessageBody } from '@nestjs/websockets';
 import { IUserPayload } from 'src/app/auth/@types/IUserPayload';
 
 import { InjectLogger } from 'src/app/logger/decorators/inject-logger.decorator';
@@ -29,7 +25,7 @@ export class ChatService {
     @InjectLogger(ChatService) private logger: Logger,
   ) {}
 
-  async addMessage(payload) {
+  async addMessage(payload): Promise<string> {
     //todo: check if this is a match
     this.logger.debug(this.addMessage.name, `payload: ${payload}`);
     const chatDetails = await this.userChatDetailsService.getDetailsForChat(
@@ -48,7 +44,8 @@ export class ChatService {
     );
 
     if (!socketId) {
-      return await this.notificationService.sendNotification(payload);
+      await this.notificationService.sendNotification(payload);
+      return null;
     }
     return socketId;
   }

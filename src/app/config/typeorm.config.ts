@@ -1,6 +1,7 @@
 import { TypeOrmModuleOptions } from '@nestjs/typeorm';
 import { ConnectedUsers } from '../chat/entities/connected-users';
 import { Message } from '../chat/entities/message';
+import { User } from '../chat/entities/user';
 import { UserChatDetails } from '../chat/entities/user-chat-details';
 
 export default (): {
@@ -30,7 +31,7 @@ export default (): {
       name: 'postgres',
       host: process.env.DB_HOST,
       port: parseInt(process.env.DB_PORT),
-      entities: [Message, ConnectedUsers, UserChatDetails],
+      entities: [Message, ConnectedUsers, UserChatDetails, User],
       username: process.env.DB_USER,
       password: process.env.DB_PASSWORD,
       database: process.env.DB_NAME,
