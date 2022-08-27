@@ -19,8 +19,7 @@ const defaultConfig: IEnvironmentConfigType = {
   clientId: 'CHATCLIENTID',
   consumerGroupId: '',
   consumerUrl: '',
-  producerUrl:
-    'https://sqs.us-east-1.amazonaws.com/074051434629/scoop-common-queue',
+  producerUrl: process.env.PRODUCER_URL,
 };
 
 if (process.env.NODE_ENV === EnvironmentTypeEnum.PRODUCTION) {
