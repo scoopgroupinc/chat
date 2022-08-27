@@ -32,6 +32,7 @@ src/environments/**/secrets/*
 *.launch
 .settings/
 *.sublime-workspace
+**.zip
 
 # IDE - VSCode
 .vscode/*

@@ -1,0 +1,24 @@
+name: Running Test
+
+on:
+  push:
+    branches:
+      - '**'
+      - '!development'
+
+jobs:
+  test:
+    name: test
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+      - name: Setup Node environment
+        uses: actions/setup-node@v3
+      - name: Install Dependencies
+        run: |
+          npm install
+      - name: Compile Code
+        run: |
+          npm run build
+          echo "Code compiled successfully"
