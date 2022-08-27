@@ -8,7 +8,7 @@ import { UserRepository } from '../repositories/user.repository';
 export class NotificationService {
   constructor(
     @InjectRepository(UserRepository) private userRepository: UserRepository,
-    @Inject('CHAT_NOTIFICATION') private readonly client: ClientProxy,
+    @Inject('CHAT_NOTIFICATION') private client: ClientProxy,
   ) {}
 
   async sendNotification(payload) {
