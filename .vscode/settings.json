@@ -2,5 +2,8 @@
   "cSpell.words": [
     "typeorm",
     "websockets"
-  ]
+  ],
+  "yaml.schemas": {
+    "https://json.schemastore.org/github-workflow.json": "file:///home/jaymin/projects/com.scoop/chat/.github/workflows/deploy.yml"
+  }
 }
