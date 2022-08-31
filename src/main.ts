@@ -37,7 +37,7 @@ async function bootstrap() {
     setTimeout(() => {
       console.log('App started and exited successfully');
       process.exit(0);
-    }, 50000);
+    }, 5000);
   }
 }
 bootstrap();
