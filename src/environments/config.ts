@@ -20,6 +20,7 @@ const defaultConfig: IEnvironmentConfigType = {
   consumerGroupId: '',
   consumerUrl: '',
   producerUrl: process.env.PRODUCER_URL,
+  moduleBootStartpTimeoutInMs: 20000,
 };
 
 if (process.env.NODE_ENV === EnvironmentTypeEnum.PRODUCTION) {
