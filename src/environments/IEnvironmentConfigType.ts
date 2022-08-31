@@ -12,4 +12,5 @@ export interface IEnvironmentConfigType {
   consumerGroupId: string;
   consumerUrl: string;
   producerUrl: string;
+  moduleBootStartpTimeoutInMs: number;
 }

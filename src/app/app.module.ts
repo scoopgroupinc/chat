@@ -19,16 +19,16 @@ import { config } from 'src/environments/config';
       ignoreEnvFile: process.env.NODE_ENV === EnvironmentTypeEnum.PRODUCTION,
       load: [typeormConfig],
     }),
-    TypeOrmModule.forRootAsync({
-      useFactory: (configService: ConfigService) =>
-        configService.get('typeorm'),
-      inject: [ConfigService],
-    }),
+    // TypeOrmModule.forRootAsync({
+    //   useFactory: (configService: ConfigService) =>
+    //     configService.get('typeorm'),
+    //   inject: [ConfigService],
+    // }),
     LoggerModule.forFeature({
       consumers: [RequestLoggingMiddleware],
     }),
-    ChatWsModule,
-    ChatHttpModule,
+    // ChatWsModule,
+    // ChatHttpModule,
     CommonModule,
   ],
 })

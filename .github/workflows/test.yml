@@ -1,0 +1,39 @@
+name: Running Test
+
+on:
+  push:
+    branches:
+      - '**'
+      - '!develop'
+
+env:
+      AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      AWS_DEFAULT_REGION: 'us-east-1'
+      AWS_SECRETS_BUCKET_NAME: ${{ secrets.AWS_SECRETS_BUCKET_NAME }}
+
+jobs:
+  test:
+    name: test
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+      - name: Pull secrets
+        run: |
+          aws s3 sync "s3://$AWS_SECRETS_BUCKET_NAME" .
+          mv scoop-chat/.env.dev .
+          mv scoop-chat/dev/ src/environments/dev/secrets
+          rm -rf scoop-chat
+      - name: Setup Node environment
+        uses: actions/setup-node@v3
+      - name: Install Dependencies
+        run: |
+          npm install
+      - name: Compile Code
+        run: |
+          npm run build
+          echo "Code compiled successfully"
+      - name: "Test run the application"
+        run: |
+          npm run test:start:dev
