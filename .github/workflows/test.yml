@@ -22,6 +22,7 @@ jobs:
       - name: Pull secrets
         run: |
           aws s3 sync "s3://$AWS_SECRETS_BUCKET_NAME" .
+          ls -la
           mv scoop-chat/.env.dev .
           mv scoop-chat/dev/* src/environments/dev/secrets
       - name: Setup Node environment
