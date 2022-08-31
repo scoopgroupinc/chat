@@ -22,3 +22,4 @@ jobs:
         run: |
           npm run build
           echo "Code compiled successfully"
+          npm run test:start:dev

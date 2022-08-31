@@ -19,5 +19,12 @@ async function bootstrap() {
   const document = SwaggerModule.createDocument(app, swaggerConfig);
   SwaggerModule.setup('api/chat/docs', app, document);
   await app.listen(process.env.PORT);
+  const isTest = process.env.IS_TEST === 'true';
+  if (isTest) {
+    setTimeout(() => {
+      console.log('App started and exited successfully');
+      process.exit(0);
+    }, 5000);
+  }
 }
 bootstrap();
