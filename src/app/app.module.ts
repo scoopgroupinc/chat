@@ -19,13 +19,6 @@ import { config } from 'src/environments/config';
       ignoreEnvFile: process.env.NODE_ENV === EnvironmentTypeEnum.PRODUCTION,
       load: [typeormConfig],
     }),
-<<<<<<< HEAD
-    // TypeOrmModule.forRootAsync({
-    //   useFactory: (configService: ConfigService) =>
-    //     configService.get('typeorm'),
-    //   inject: [ConfigService],
-    // }),
-=======
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
       inject: [ConfigService],
@@ -50,7 +43,6 @@ import { config } from 'src/environments/config';
         host: process.env.DB_HOST3,
       }),
     }),
->>>>>>> df482a9 (chats integration)
     LoggerModule.forFeature({
       consumers: [RequestLoggingMiddleware],
     }),
