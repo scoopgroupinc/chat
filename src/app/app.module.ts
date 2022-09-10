@@ -19,11 +19,30 @@ import { config } from 'src/environments/config';
       ignoreEnvFile: process.env.NODE_ENV === EnvironmentTypeEnum.PRODUCTION,
       load: [typeormConfig],
     }),
-    // TypeOrmModule.forRootAsync({
-    //   useFactory: (configService: ConfigService) =>
-    //     configService.get('typeorm'),
-    //   inject: [ConfigService],
-    // }),
+    TypeOrmModule.forRootAsync({
+      imports: [ConfigModule],
+      inject: [ConfigService],
+      useFactory: (database: ConfigService) => ({
+        ...database.get('typeorm'),
+        host: process.env.DB_HOST1,
+      }),
+    }),
+    TypeOrmModule.forRootAsync({
+      imports: [ConfigModule],
+      inject: [ConfigService],
+      useFactory: (database: ConfigService) => ({
+        ...database.get('typeorm'),
+        host: process.env.DB_HOST2,
+      }),
+    }),
+    TypeOrmModule.forRootAsync({
+      imports: [ConfigModule],
+      inject: [ConfigService],
+      useFactory: (database: ConfigService) => ({
+        ...database.get('typeorm'),
+        host: process.env.DB_HOST3,
+      }),
+    }),
     LoggerModule.forFeature({
       consumers: [RequestLoggingMiddleware],
     }),
