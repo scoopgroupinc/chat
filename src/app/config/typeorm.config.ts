@@ -9,7 +9,7 @@ export default (): {
   if (!process.env.NODE_ENV) {
     throw new Error('NODE_ENV is not defined');
   }
-  if (!process.env.DB_HOST1) {
+  if (!process.env.DB_HOST) {
     throw new Error('DB_HOST is not defined');
   }
   if (!process.env.DB_PORT) {
@@ -28,7 +28,7 @@ export default (): {
     typeorm: {
       type: 'postgres',
       name: 'postgres',
-      host: process.env.DB_HOST2,
+      host: process.env.DB_HOST,
       port: parseInt(process.env.DB_PORT),
       entities: [Message, ConnectedUsers, UserChatDetails],
       username: process.env.DB_USER,
