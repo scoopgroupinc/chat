@@ -8,8 +8,6 @@ import { CommonModule } from './common/common.module';
 import typeormConfig from './config/typeorm.config';
 import { LoggerModule } from './logger/logger.module';
 import { RequestLoggingMiddleware } from './logger/middlewares/request-logging.middleware';
-import { ClientsModule } from '@nestjs/microservices';
-import { config } from 'src/environments/config';
 
 @Module({
   imports: [
@@ -19,16 +17,16 @@ import { config } from 'src/environments/config';
       ignoreEnvFile: process.env.NODE_ENV === EnvironmentTypeEnum.PRODUCTION,
       load: [typeormConfig],
     }),
-    // TypeOrmModule.forRootAsync({
-    //   useFactory: (configService: ConfigService) =>
-    //     configService.get('typeorm'),
-    //   inject: [ConfigService],
-    // }),
+    TypeOrmModule.forRootAsync({
+      useFactory: (configService: ConfigService) =>
+        configService.get('typeorm'),
+      inject: [ConfigService],
+    }),
     LoggerModule.forFeature({
       consumers: [RequestLoggingMiddleware],
     }),
-    // ChatWsModule,
-    // ChatHttpModule,
+    ChatWsModule,
+    ChatHttpModule,
     CommonModule,
   ],
 })
