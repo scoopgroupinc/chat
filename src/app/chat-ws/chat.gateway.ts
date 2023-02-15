@@ -37,6 +37,7 @@ export class ChatGateway
 
   async handleConnection(client: Socket) {
     const authToken = client.handshake?.headers?.authorization || 'abc';
+    console.log(JSON.stringify(authToken));
     if (!authToken) {
       this.disconnect(client);
       return;
@@ -76,12 +77,11 @@ export class ChatGateway
 
   @SubscribeMessage('addMessage')
   async addMessage(@MessageBody() payload) {
+    console.log(payload);
     payload.userID = payload[0].user._id;
     const socketId = await this.chatService.addMessage(payload);
 
-    this.socketService.server
-      .to(socketId)
-      .emit('receiveMessage', payload.content);
+    this.socketService.server.to(socketId).emit('receiveMessage', payload);
   }
 
   @SubscribeMessage('onTyping')
@@ -99,8 +99,10 @@ export class ChatGateway
 
     let isOnline = undefined;
     if (checkedUser) isOnline = true;
-    await this.socketService.server
-      .to(user.socketId)
-      .emit('isOnline', isOnline);
+    if (user?.socketId) {
+      await this.socketService.server
+        .to(user.socketId)
+        .emit('isOnline', isOnline);
+    }
   }
 }

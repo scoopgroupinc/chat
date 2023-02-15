@@ -11,6 +11,7 @@ export class HttpAuthGuard implements CanActivate {
       return false;
     }
     const user = await this.authService.validateUser(token);
+    console.log(user);
     if (!user) {
       return false;
     }
