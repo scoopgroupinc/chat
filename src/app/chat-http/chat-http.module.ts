@@ -15,4 +15,5 @@ import { HttpAuthGuard } from './guard/http-auth.guard';
     },
   ],
 })
+
 export class ChatHttpModule {}
