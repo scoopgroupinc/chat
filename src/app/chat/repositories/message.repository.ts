@@ -13,14 +13,22 @@ import { Message } from '../entities/message';
 @EntityRepository(Message)
 export class MessageRepository extends AbstractRepository<Message> {
   async addMessageToDb(payload: Message) {
-    payload.contentType = MessageContentTypes.TEXT;
-    payload.sentAt = new Date();
-    return await this.manager.save(payload);
+    const messageBody = {
+      receiverID: payload.receiverID,
+      content: payload.content,
+      createdAt: payload.createdAt,
+      senderID: payload.senderID,
+      contentType: MessageContentTypes.TEXT,
+      sentAt: new Date(),
+    };
+
+    return await this.manager.insert(Message, messageBody);
   }
 
   async getChatMessages(
     fromDate: Date,
     toDate: Date,
+    page: number,
     ofUserId: string,
     user: IUserPayload,
   ) {
@@ -33,24 +41,22 @@ export class MessageRepository extends AbstractRepository<Message> {
       senderID: user.userId,
     };
 
-    const finalQuery: { where: object; take?: number } = {
-      where: query,
+    // if (toDate && fromDate) {
+    //   query.createdAt = Between(fromDate, toDate);
+    // } else if (fromDate) {
+    //   query.createdAt = MoreThanOrEqual(fromDate);
+    // } else if (toDate) {
+    //   query.createdAt = LessThanOrEqual(toDate);
+    // }
+    const finalQuery: { where: object; take?: number; order: any } = {
+      where: [query, { senderID: ofUserId, receiverID: user.userId }],
+      order: { createdAt: 'DESC' },
+      take: config.defaultNoOfMessageToSend * page,
     };
-
-    if (toDate && fromDate) {
-      query.createdAt = Between(fromDate, toDate);
-    } else if (fromDate) {
-      query.createdAt = MoreThanOrEqual(fromDate);
-      finalQuery.take = config.defaultNoOfMessageToSend;
-    } else if (toDate) {
-      query.createdAt = LessThanOrEqual(toDate);
-      finalQuery.take = config.defaultNoOfMessageToSend;
-    }
-
-    finalQuery.where = query;
+    finalQuery.where = [query, { senderID: ofUserId, receiverID: user.userId }];
 
     const messages = await this.repository.find(finalQuery);
-    return messages;
+    return messages.reverse();
   }
 
   async deleteMessage(messageId: string, user: IUserPayload) {

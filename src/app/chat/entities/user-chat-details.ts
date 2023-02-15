@@ -1,6 +1,6 @@
 import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 
-@Entity()
+@Entity('user-chats')
 export class UserChatDetails {
   @PrimaryGeneratedColumn({ type: 'bigint' })
   id: string;
