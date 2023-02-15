@@ -20,26 +20,7 @@ import { RequestLoggingMiddleware } from './logger/middlewares/request-logging.m
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
       inject: [ConfigService],
-      useFactory: (database: ConfigService) => ({
-        ...database.get('typeorm'),
-        host: process.env.DB_HOST1,
-      }),
-    }),
-    TypeOrmModule.forRootAsync({
-      imports: [ConfigModule],
-      inject: [ConfigService],
-      useFactory: (database: ConfigService) => ({
-        ...database.get('typeorm'),
-        host: process.env.DB_HOST2,
-      }),
-    }),
-    TypeOrmModule.forRootAsync({
-      imports: [ConfigModule],
-      inject: [ConfigService],
-      useFactory: (database: ConfigService) => ({
-        ...database.get('typeorm'),
-        host: process.env.DB_HOST3,
-      }),
+      useFactory: (database: ConfigService) => database.get('typeorm'),
     }),
     LoggerModule.forFeature({
       consumers: [RequestLoggingMiddleware],
