@@ -2,12 +2,11 @@ import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common';
 import { AuthService } from 'src/app/auth/auth.service';
 
 @Injectable()
-export class HttpAuthGuard implements CanActivate {
+export class WSGuard implements CanActivate {
   constructor(private authService: AuthService) {}
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const request = context.switchToHttp().getRequest();
-    console.log(request);
-    const token = request.headers.authorization;
+    const token = request.handshake.headers.authorization;
     if (!token) {
       return false;
     }
