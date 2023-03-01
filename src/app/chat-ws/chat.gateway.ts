@@ -1,9 +1,11 @@
 import {
   OnModuleDestroy,
+  Request,
   UnauthorizedException,
   UseGuards,
 } from '@nestjs/common';
 import {
+  ConnectedSocket,
   MessageBody,
   OnGatewayConnection,
   OnGatewayDisconnect,
@@ -14,7 +16,7 @@ import {
 } from '@nestjs/websockets';
 import { Server, Socket } from 'socket.io';
 import { AuthService } from '../auth/auth.service';
-import { HttpAuthGuard } from '../chat-http/guard/http-auth.guard';
+import { IMessage, IOnline, ITyping } from '../chat/@types/IMessage';
 import { ChatService } from '../chat/services/chat.service';
 import { ConnectedUsersService } from '../chat/services/connected-users.service';
 import { SocketService } from '../chat/services/socket.service';
@@ -80,26 +82,29 @@ export class ChatGateway
     console.log('Module destroyed');
   }
 
-  @SubscribeMessage('addMessage')
   @UseGuards(WSGuard)
-  async addMessage(@MessageBody() payload) {
-    payload.userID = payload[0].user._id;
+  @SubscribeMessage('addMessage')
+  async addMessage(@MessageBody() payload: IMessage, @Request() req) {
+    //@ts-ignore
+    payload.userID = req.user.userId;
     const socketId = await this.chatService.addMessage(payload);
 
     this.socketService.server.to(socketId).emit('receiveMessage', payload);
   }
 
-  @SubscribeMessage('onTyping')
   @UseGuards(WSGuard)
-  async typingMessage(@MessageBody() payload: any) {
+  @SubscribeMessage('onTyping')
+  async typingMessage(@MessageBody() payload: ITyping) {
     const socketId = await this.chatService.typingMessage(payload);
 
     await this.socketService.server.to(socketId).emit('isTyping', payload);
   }
 
-  @SubscribeMessage('online')
   @UseGuards(WSGuard)
-  async checkUserOnline(@MessageBody() payload: any) {
+  @SubscribeMessage('online')
+  async checkUserOnline(@MessageBody() payload: IOnline, @Request() req) {
+    //@ts-ignore
+    payload.userId = req.user.userId;
     const { user, checkedUser } = await this.chatService.checkUserOnline(
       payload,
     );
