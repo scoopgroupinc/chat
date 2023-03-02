@@ -1,6 +1,5 @@
 import {
   OnModuleDestroy,
-  Request,
   UnauthorizedException,
   UseGuards,
 } from '@nestjs/common';
@@ -84,9 +83,7 @@ export class ChatGateway
 
   @UseGuards(WSGuard)
   @SubscribeMessage('addMessage')
-  async addMessage(@MessageBody() payload: IMessage, @Request() req) {
-    //@ts-ignore
-    payload.userID = req.user.userId;
+  async addMessage(@MessageBody() payload: IMessage) {
     const socketId = await this.chatService.addMessage(payload);
 
     this.socketService.server.to(socketId).emit('receiveMessage', payload);
@@ -102,9 +99,7 @@ export class ChatGateway
 
   @UseGuards(WSGuard)
   @SubscribeMessage('online')
-  async checkUserOnline(@MessageBody() payload: IOnline, @Request() req) {
-    //@ts-ignore
-    payload.userId = req.user.userId;
+  async checkUserOnline(@MessageBody() payload: IOnline) {
     const { user, checkedUser } = await this.chatService.checkUserOnline(
       payload,
     );

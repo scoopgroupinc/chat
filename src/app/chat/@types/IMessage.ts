@@ -7,6 +7,7 @@ export interface IMessage {
 }
 
 export interface ITyping {
+  userID: string;
   toUserID: string;
   typing: boolean;
 }
