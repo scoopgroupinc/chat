@@ -5,8 +5,9 @@ import { AuthService } from 'src/app/auth/auth.service';
 export class WSGuard implements CanActivate {
   constructor(private authService: AuthService) {}
   async canActivate(context: ExecutionContext): Promise<boolean> {
-    const request = context.switchToHttp().getRequest();
-    const token = request.handshake.headers.authorization;
+    const request = context.switchToHttp();
+
+    const token = request.getRequest().handshake.headers.authorization;
     if (!token) {
       return false;
     }
@@ -14,7 +15,8 @@ export class WSGuard implements CanActivate {
     if (!user) {
       return false;
     }
-    request.user = user;
+    //@ts-ignore
+    request.args[1].userID = user.userId;
     return true;
   }
 }

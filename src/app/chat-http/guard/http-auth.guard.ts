@@ -6,6 +6,7 @@ export class HttpAuthGuard implements CanActivate {
   constructor(private authService: AuthService) {}
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const request = context.switchToHttp().getRequest();
+    console.log(request);
     const token = request.headers.authorization;
     if (!token) {
       return false;
