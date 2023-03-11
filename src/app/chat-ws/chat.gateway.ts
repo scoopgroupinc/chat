@@ -1,5 +1,10 @@
-import { OnModuleDestroy, UnauthorizedException } from '@nestjs/common';
 import {
+  OnModuleDestroy,
+  UnauthorizedException,
+  UseGuards,
+} from '@nestjs/common';
+import {
+  ConnectedSocket,
   MessageBody,
   OnGatewayConnection,
   OnGatewayDisconnect,
@@ -10,9 +15,11 @@ import {
 } from '@nestjs/websockets';
 import { Server, Socket } from 'socket.io';
 import { AuthService } from '../auth/auth.service';
+import { IMessage, IOnline, ITyping } from '../chat/@types/IMessage';
 import { ChatService } from '../chat/services/chat.service';
 import { ConnectedUsersService } from '../chat/services/connected-users.service';
 import { SocketService } from '../chat/services/socket.service';
+import { WSGuard } from './guard/ws.guard';
 
 @WebSocketGateway()
 export class ChatGateway
@@ -37,7 +44,6 @@ export class ChatGateway
 
   async handleConnection(client: Socket) {
     const authToken = client.handshake?.headers?.authorization || 'abc';
-    console.log(JSON.stringify(authToken));
     if (!authToken) {
       this.disconnect(client);
       return;
@@ -75,24 +81,25 @@ export class ChatGateway
     console.log('Module destroyed');
   }
 
+  @UseGuards(WSGuard)
   @SubscribeMessage('addMessage')
-  async addMessage(@MessageBody() payload) {
-    console.log(payload);
-    payload.userID = payload[0].user._id;
+  async addMessage(@MessageBody() payload: IMessage) {
     const socketId = await this.chatService.addMessage(payload);
 
     this.socketService.server.to(socketId).emit('receiveMessage', payload);
   }
 
+  @UseGuards(WSGuard)
   @SubscribeMessage('onTyping')
-  async typingMessage(@MessageBody() payload: any) {
+  async typingMessage(@MessageBody() payload: ITyping) {
     const socketId = await this.chatService.typingMessage(payload);
 
     await this.socketService.server.to(socketId).emit('isTyping', payload);
   }
 
+  @UseGuards(WSGuard)
   @SubscribeMessage('online')
-  async checkUserOnline(@MessageBody() payload: any) {
+  async checkUserOnline(@MessageBody() payload: IOnline) {
     const { user, checkedUser } = await this.chatService.checkUserOnline(
       payload,
     );
