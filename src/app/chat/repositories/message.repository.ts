@@ -22,7 +22,7 @@ export class MessageRepository extends AbstractRepository<Message> {
       sentAt: new Date(),
     };
 
-    return await this.manager.insert(Message, messageBody);
+    return await this.manager.save(Message, messageBody);
   }
 
   async getChatMessages(

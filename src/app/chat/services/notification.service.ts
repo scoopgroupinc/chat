@@ -1,14 +1,14 @@
-import { Inject, Injectable } from '@nestjs/common';
-import { ClientProxy } from '@nestjs/microservices';
+import { Injectable } from '@nestjs/common';
 import { INotification } from '../@types/INotification';
+import { SQSProducer } from 'src/app/sqs/sqs-producer.service';
 
 @Injectable()
 export class NotificationService {
-  constructor(@Inject('CHAT_NOTIFICATION') private client: ClientProxy) {}
+  constructor(private producer: SQSProducer) {}
 
   async sendNotification(payload) {
     const data: INotification = {
-      id: null,
+      id: payload.id,
       title: 'Message(s)',
       body: `You have a new  from ${payload.name} `,
       isRead: false,
@@ -19,7 +19,7 @@ export class NotificationService {
       createdAt: new Date(),
     };
 
-    this.client.emit('send_notification', data);
+    await this.producer.produce(data);
     return 'sent';
   }
 }

@@ -1,4 +1,3 @@
-import { SqsClient } from '@gemunion/nestjs-sqs';
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AuthModule } from '../auth/auth.module';
@@ -11,27 +10,17 @@ import { ConnectedUsersService } from './services/connected-users.service';
 import { NotificationService } from './services/notification.service';
 import { SocketService } from './services/socket.service';
 import { UserChatDetailsService } from './services/user-chat.service';
-import { ClientsModule, Transport } from '@nestjs/microservices';
-import { config } from 'src/environments/config';
+import { SQSModule } from '../sqs/sqs.module';
 
 
 @Module({
   imports: [
-    ClientsModule.register([
-      {
-        name: 'CHAT_NOTIFICATION',
-        customClass: SqsClient,
-        options: {
-          consumerUrl: config.producerUrl,
-          producerUrl: config.consumerUrl,
-        },
-      },
-    ]),
     TypeOrmModule.forFeature([
       ConnectedUsers,
       UserChatDetails,
       MessageRepository,
     ]),
+    SQSModule,
     AuthModule,
     LoggerModule.forFeature({
       consumers: [
