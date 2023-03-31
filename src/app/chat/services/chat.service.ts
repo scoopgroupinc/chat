@@ -40,22 +40,23 @@ export class ChatService {
     }
     payload.senderID = payload.userID;
     await this.messageRepository.addMessageToDb(payload);
-    const { socketId } = await this.connectedUsersService.getUserSocketId(
+    const socketDetails = await this.connectedUsersService.getUserSocketId(
       payload.receiverID,
     );
-    if (!socketId) {
+    if (!socketDetails?.socketId) {
       await this.notificationService.sendNotification(payload);
       return null;
     }
-    return socketId;
+    return socketDetails.socketId;
   }
 
   async typingMessage(@MessageBody() payload) {
     this.logger.debug(this.typingMessage.name, `payload: ${payload}`);
-    const { socketId } = await this.connectedUsersService.getUserSocketId(
+    const socketDetails = await this.connectedUsersService.getUserSocketId(
       payload.toUserID,
     );
-    return socketId;
+    if (!socketDetails?.socketId) return null;
+    return socketDetails.socketId;
   }
 
   async checkUserOnline(payload) {
@@ -118,10 +119,13 @@ export class ChatService {
       `messageId: ${messageId}, user: ${user}`,
     );
     const message = await this.messageRepository.deleteMessage(messageId, user);
-    const { socketId } = await this.connectedUsersService.getUserSocketId(
+    const socketDetails = await this.connectedUsersService.getUserSocketId(
       message.receiverID,
     );
-    this.socketService.server.to(socketId).emit('deletedMessage', message);
+    if (!socketDetails?.socketId) return null;
+    this.socketService.server
+      .to(socketDetails.socketId)
+      .emit('deletedMessage', message);
 
     return 'message deleted';
   }
