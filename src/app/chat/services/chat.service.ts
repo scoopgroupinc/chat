@@ -39,12 +39,12 @@ export class ChatService {
       );
     }
     payload.senderID = payload.userID;
-    await this.messageRepository.addMessageToDb(payload);
+    const message = await this.messageRepository.addMessageToDb(payload);
     const socketDetails = await this.connectedUsersService.getUserSocketId(
       payload.receiverID,
     );
     if (!socketDetails?.socketId) {
-      await this.notificationService.sendNotification(payload);
+      await this.notificationService.sendNotification({id: message.id ? `${message.id}`: undefined, ...payload});
       return null;
     }
     return socketDetails.socketId;

@@ -8,6 +8,7 @@ import { CommonModule } from './common/common.module';
 import typeormConfig from './config/typeorm.config';
 import { LoggerModule } from './logger/logger.module';
 import { RequestLoggingMiddleware } from './logger/middlewares/request-logging.middleware';
+import awsConfig from './config/aws.config';
 
 @Module({
   imports: [
@@ -15,7 +16,7 @@ import { RequestLoggingMiddleware } from './logger/middlewares/request-logging.m
       isGlobal: true,
       envFilePath: `.env.${process.env.NODE_ENV}`,
       ignoreEnvFile: process.env.NODE_ENV === EnvironmentTypeEnum.PRODUCTION,
-      load: [typeormConfig],
+      load: [typeormConfig, awsConfig],
     }),
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
