@@ -1,9 +1,9 @@
-name: Build and Deploy to dev
+name: Build and Deploy to prod
 
 on:
   push:
     branches:
-      - develop
+      - master
 
 env:
   AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
@@ -26,8 +26,8 @@ jobs:
       - name: pull secrets
         run: |
           aws s3 sync "s3://$AWS_SECRETS_BUCKET_NAME" .
-          mv scoop-chat/.env.dev .
-          mv scoop-chat/dev/ src/environments/dev/secrets
+          mv scoop-chat/.env.prod .
+          mv scoop-chat/prod/ src/environments/prod/secrets
           rm -rf scoop-chat
       - name: install dependencies
         run: |
@@ -38,13 +38,13 @@ jobs:
       - name: build artifacts as zip
         run: |
           echo "Creating build artifacts as zip"
-          zip -qr scoop-chat-dev.zip .
+          zip -qr scoop-chat-prod.zip .
           echo "Completed!!"
       - name: Upload artifacts to S3
         run: |
-          aws s3 cp scoop-chat-dev.zip "s3://$AWS_S3_BUILD_ARTIFACTS_BUCKET_NAME"
+          aws s3 cp scoop-chat-prod.zip "s3://$AWS_S3_BUILD_ARTIFACTS_BUCKET_NAME"
       - name: Deploy aftifacts to Elastic Beanstalk
         run: |
           versionLabel=$(uuidgen)
-          aws elasticbeanstalk create-application-version --application-name scoop-chat --source-bundle S3Bucket="$AWS_S3_BUILD_ARTIFACTS_BUCKET_NAME",S3Key="scoop-chat-dev.zip" --version-label="$versionLabel"
-          aws elasticbeanstalk update-environment --application-name scoop-chat --environment-name Scoopchat-dev --version-label "$versionLabel"
+          aws elasticbeanstalk create-application-version --application-name scoop-chat-prod --source-bundle S3Bucket="$AWS_S3_BUILD_ARTIFACTS_BUCKET_NAME",S3Key="scoop-chat-prod.zip" --version-label="$versionLabel"
+          aws elasticbeanstalk update-environment --application-name scoop-chat-prod --environment-name Scoopchat-prod --version-label "$versionLabel"
