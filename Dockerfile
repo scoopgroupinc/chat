@@ -5,7 +5,9 @@ FROM node:16.15.0
 WORKDIR /app
 
 # Copy the package.json and yarn.lock files to the working directory
-COPY package*.json package-lock.json ./
+COPY package*.json ./
+
+RUN npm install -g @nestjs/cli
 
 # Install dependencies
 RUN npm install --production
