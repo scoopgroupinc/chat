@@ -5,10 +5,10 @@ FROM node:16.15.0
 WORKDIR /app
 
 # Copy the package.json and yarn.lock files to the working directory
-COPY package*.json yarn.lock ./
+COPY package*.json package-lock.json ./
 
 # Install dependencies
-RUN yarn install --production
+RUN npm install --production
 
 # Copy the rest of the application files to the working directory
 COPY . .
@@ -65,10 +65,10 @@ ENV AZURE_ACCOUNT_NAME=$AZURE_ACCOUNT_NAME
 ENV AZURE_ACCOUNT_KEY=$AZURE_ACCOUNT_KEY
 
 # Build the application
-RUN yarn build
+RUN npm run build
 
 # Expose a port if your application needs to listen on a specific port
 EXPOSE $PORT
 
 # Define the command to start your Node.js application
-CMD [ "yarn", "start:prod" ]
+CMD [ "npm", "start:prod" ]
