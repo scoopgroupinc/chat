@@ -1,0 +1,40 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: chat-deployment
+  labels:
+    app: chat
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: chat
+  template:
+    metadata:
+      labels:
+        app: chat
+    spec:
+      containers:
+      - name: chat-container
+        image: ${CONTAINER_REGISTRY}/chat:${IMAGE_TAG}
+        imagePullPolicy: Always
+        ports:
+          - containerPort: ${PORT}
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  annotations:
+    service.beta.kubernetes.io/azure-load-balancer-resource-group: scoop-dev-rg
+  name: chat-service
+spec:
+  selector:
+    app: chat
+  ports:
+    - name: chat-port 
+      protocol: TCP
+      port: ${PORT}
+      targetPort: ${PORT}
+  type: ClusterIP

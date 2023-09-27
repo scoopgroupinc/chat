@@ -116,7 +116,7 @@ export class ChatController {
   @ApiConsumes('multipart/form-data')
   @HttpCode(HttpStatus.OK)
   async uploadFile(
-    @UploadedFile() file: Express.Multer.File,
+    @UploadedFile() file,
     @GetUser() user: IUserPayload,
   ): Promise<any> {
     // TODO: Implement;
