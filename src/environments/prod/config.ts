@@ -3,9 +3,9 @@ import { IEnvironmentConfigType } from '../IEnvironmentConfigType';
 export const config: Partial<IEnvironmentConfigType> = {
   production: true,
   allowedOrigins: ['*'],
-  siteUrl: 'https://www.domain.com/',
+  siteUrl: 'https://scoop.love/',
   fileMaxSizeInBytes: 24576000, // 24MB
-  supportEmail: 'abc2@xyz.com',
-  logoUrl: 'https://www.domain.com/media/images/platform/WebLogo.png',
+  supportEmail: 'noreply@scoop.love',
+  logoUrl: 'https://scoop.love/media/images/platform/WebLogo.png',
   producerUrl: process.env.PRODUCER_URL,
 };
