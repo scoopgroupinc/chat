@@ -44,7 +44,11 @@ export class ChatService {
       payload.receiverID,
     );
     if (!socketDetails?.socketId) {
-      await this.notificationService.sendNotification({id: message.id ? `${message.id}`: undefined, ...payload});
+      // await this.notificationService.sendNotification({id: message.id ? `${message.id}`: undefined, ...payload});
+      await this.notificationService.serviceBusNotification({
+        id: message.id ? `${message.id}` : undefined,
+        ...payload,
+      });
       return null;
     }
     return socketDetails.socketId;
