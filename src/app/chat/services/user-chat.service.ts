@@ -32,7 +32,9 @@ export class UserChatDetailsService {
       `userID: ${userID}, toUserID: ${toUserID}`,
     );
 
-    const chat = await this.userChatDetailsRepo.findOne({ userID, toUserID });
+    const chat = await this.userChatDetailsRepo.findOne({
+      where: { userID, toUserID },
+    });
     const lastRead = new Date();
     if (chat) {
       return await this.userChatDetailsRepo.save({
@@ -52,7 +54,9 @@ export class UserChatDetailsService {
 
   public async getUserConversationList(userID: string) {
     this.logger.debug(this.getUserConversationList.name, `userID: ${userID}`);
-    return await this.userChatDetailsRepo.find({ userID, lastDeleted: null });
+    return await this.userChatDetailsRepo.find({
+      where: { userID, lastDeleted: null },
+    });
   }
 
   public async deleteUserChat(ofUserId: string, user: IUserPayload) {
@@ -63,8 +67,10 @@ export class UserChatDetailsService {
     );
 
     const userChat = await this.userChatDetailsRepo.findOne({
-      toUserID: ofUserId,
-      userID: user.userId,
+      where: {
+        toUserID: ofUserId,
+        userID: user.userId,
+      },
     });
 
     await this.userChatDetailsRepo.save({

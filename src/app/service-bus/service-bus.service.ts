@@ -1,9 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import {
-  ServiceBusClient,
-  ServiceBusMessage,
-  ServiceBusSender,
-} from '@azure/service-bus';
+import { ServiceBusClient, ServiceBusSender } from '@azure/service-bus';
 import { ConfigService } from '@nestjs/config';
 
 @Injectable()
@@ -21,7 +17,7 @@ export class ServiceBusService {
     );
   }
 
-  async sendMessage(message: ServiceBusMessage): Promise<void> {
+  async sendMessage(message: any): Promise<void> {
     try {
       await this.sender.sendMessages(message);
       await this.sender.close();
