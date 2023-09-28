@@ -66,6 +66,8 @@ jobs:
           echo "JWT_SECRET=$JWT_SECRET"
           echo "JWT_EXPIRES_IN=$JWT_EXPIRES_IN"
           echo "PORT=$PORT"
+          echo "AZURE_SERVICE_BUS_QUEUE_NAMESPACE=$AZURE_SERVICE_BUS_QUEUE_NAMESPACE"
+          echo "AZURE_SERVICE_BUS_QUEUE_CONNECTION_STRING=$AZURE_SERVICE_BUS_QUEUE_CONNECTION_STRING"
 
       - uses: actions/setup-node@v3
         with:
@@ -90,6 +92,8 @@ jobs:
           --build-arg JWT_SECRET="${JWT_SECRET}" \
           --build-arg JWT_EXPIRES_IN="${JWT_EXPIRES_IN}" \
           --build-arg PORT="${PORT}" \
+          --build-arg AZURE_SERVICE_BUS_QUEUE_NAMESPACE="${AZURE_SERVICE_BUS_QUEUE_NAMESPACE}" \
+          --build-arg AZURE_SERVICE_BUS_QUEUE_CONNECTION_STRING="${AZURE_SERVICE_BUS_QUEUE_CONNECTION_STRING}" \
           .
           docker push ${{ secrets.AZURE_CONTAINER_REGISTRY_LOGIN_SERVER_DEV }}/chat:${{ github.sha }}
           docker build -t ${{ secrets.AZURE_CONTAINER_REGISTRY_LOGIN_SERVER_DEV }}/chat:latest \
@@ -103,6 +107,8 @@ jobs:
           --build-arg JWT_SECRET="${JWT_SECRET}" \
           --build-arg JWT_EXPIRES_IN="${JWT_EXPIRES_IN}" \
           --build-arg PORT="${PORT}" \
+          --build-arg AZURE_SERVICE_BUS_QUEUE_NAMESPACE="${AZURE_SERVICE_BUS_QUEUE_NAMESPACE}" \
+          --build-arg AZURE_SERVICE_BUS_QUEUE_CONNECTION_STRING="${AZURE_SERVICE_BUS_QUEUE_CONNECTION_STRING}" \
           .
           docker push ${{ secrets.AZURE_CONTAINER_REGISTRY_LOGIN_SERVER_DEV }}/chat:latest
 
