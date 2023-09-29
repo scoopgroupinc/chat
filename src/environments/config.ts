@@ -9,12 +9,12 @@ let config: IEnvironmentConfigType;
 const defaultConfig: IEnvironmentConfigType = {
   production: false,
   allowedOrigins: ['*'],
-  siteUrl: 'https://www.domain.com/',
+  siteUrl: 'https://scoop.love/',
   fileMaxSizeInBytes: 24576000, // 24MB
   supportEmail: 'noreply@scoop.love',
-  logoUrl: 'https://www.domain.com/media/images/platform/WebLogo.png',
+  logoUrl: 'https://scoop.love/media/images/platform/WebLogo.png',
   defaultNoOfMessageToSend: 50,
-  jwtExpiration: '1d',
+  jwtExpiration: process.env.JWT_EXPIRES_IN || '1d',
   kafkaBrokers: ['127.0.0.1:39094'],
   clientId: 'CHATCLIENTID',
   consumerGroupId: '',

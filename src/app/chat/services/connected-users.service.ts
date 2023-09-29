@@ -46,7 +46,9 @@ export class ConnectedUsersService {
 
     const ec2InstanceID = 'abcdxyz';
     const connectedUser = await this.connectedUserRepo.findOne({
-      userId: userID,
+      where: {
+        userId: userID,
+      },
     });
     if (!connectedUser) {
       const newConnectedUser = new ConnectedUsers(
@@ -63,7 +65,11 @@ export class ConnectedUsersService {
   }
 
   public async getUserSocketId(userId: string): Promise<ConnectedUsers> {
-    return await this.connectedUserRepo.findOne({ userId });
+    return await this.connectedUserRepo.findOne({
+      where: {
+        userId,
+      },
+    });
   }
 
   public async updateUserStatus(
@@ -71,7 +77,9 @@ export class ConnectedUsersService {
     user: IUserPayload,
   ) {
     const connectedUser = await this.connectedUserRepo.findOne({
-      userId: user.userId,
+      where: {
+        userId: user.userId,
+      },
     });
     let response;
     if (status.toLowerCase() === UserStatusTypeForChat.ONLINE.toLowerCase()) {
@@ -90,7 +98,7 @@ export class ConnectedUsersService {
   }
 
   public async getUserDatails(userId: string) {
-    const user = await this.connectedUserRepo.findOne({ userId });
+    const user = await this.connectedUserRepo.findOne({ where: { userId } });
     return user?.lastActive ?? undefined;
   }
 }

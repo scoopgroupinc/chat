@@ -84,8 +84,8 @@ export class ChatGateway
   @UseGuards(WSGuard)
   @SubscribeMessage('addMessage')
   async addMessage(@MessageBody() payload: IMessage) {
+    console.log('addMessage', payload);
     const socketId = await this.chatService.addMessage(payload);
-
     this.socketService.server.to(socketId).emit('receiveMessage', payload);
   }
 
@@ -93,7 +93,6 @@ export class ChatGateway
   @SubscribeMessage('onTyping')
   async typingMessage(@MessageBody() payload: ITyping) {
     const socketId = await this.chatService.typingMessage(payload);
-
     await this.socketService.server.to(socketId).emit('isTyping', payload);
   }
 

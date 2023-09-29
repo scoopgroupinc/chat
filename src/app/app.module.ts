@@ -8,7 +8,8 @@ import { CommonModule } from './common/common.module';
 import typeormConfig from './config/typeorm.config';
 import { LoggerModule } from './logger/logger.module';
 import { RequestLoggingMiddleware } from './logger/middlewares/request-logging.middleware';
-import awsConfig from './config/aws.config';
+// import awsConfig from './config/aws.config';
+import serviceBusConfig from './config/azure.config';
 
 @Module({
   imports: [
@@ -16,7 +17,7 @@ import awsConfig from './config/aws.config';
       isGlobal: true,
       envFilePath: `.env.${process.env.NODE_ENV}`,
       ignoreEnvFile: process.env.NODE_ENV === EnvironmentTypeEnum.PRODUCTION,
-      load: [typeormConfig, awsConfig],
+      load: [typeormConfig, serviceBusConfig],
     }),
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],

@@ -1,0 +1,176 @@
+name: Build and deploy Node.js app to Azure Container Registry - scoopDevContainerRegistry
+
+on:
+  push:
+    branches:
+      - develop
+      - pipeline
+
+jobs:
+  build-dev:
+    runs-on: ubuntu-latest
+    if: github.ref_name == 'pipeline'
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Set secrets as build arguments
+        env:
+          DB_TYPE: ${{ vars.DB_TYPE_DEV }}
+          DB_DATABASE: ${{ vars.DB_DATABASE_DEV }}
+          DB_HOST: ${{ vars.DB_HOST_DEV }}
+          DB_USERNAME: ${{ secrets.DB_USERNAME_DEV }}
+          DB_PORT: ${{ vars.DB_PORT_DEV }}
+          DB_PASSWORD: ${{ secrets.DB_PASSWORD_DEV }}
+          DB_SSL_CA_CERT: $${{ secrets.DB_SSL_CA_CERT_DEV }}
+          JWT_SECRET: ${{ secrets.JWT_SECRET_DEV }}
+          JWT_EXPIRES_IN: $${{ vars.JWT_EXPIRES_IN_DEV }}
+          PORT: ${{ vars.PORT_DEV }}
+          AZURE_BLOB_CONTAINER_NAME: ${{ vars.AZURE_BLOB_CONTAINER_NAME_DEV }}
+          AZURE_STORAGE_CONNECTION_STRING: ${{ secrets.AZURE_STORAGE_CONNECTION_STRING_DEV }}
+          AZURE_ACCOUNT_NAME: ${{ vars.AZURE_ACCOUNT_NAME_DEV }}
+          AZURE_ACCOUNT_KEY: ${{ secrets.AZURE_ACCOUNT_KEY_DEV }}
+          AZURE_SERVICE_BUS_QUEUE_NAMESPACE: ${{ vars.SERVICE_BUS_QUEUE_NAMESPACE_DEV }}
+          AZURE_SERVICE_BUS_QUEUE_CONNECTION_STRING: ${{ vars.SERVICE_BUS_QUEUE_CONNECTION_STRING_DEV }}
+
+        run: |
+          echo "DB_TYPE=${DB_TYPE}" >> $GITHUB_ENV
+          echo "DB_DATABASE=${DB_DATABASE}" >> $GITHUB_ENV
+          echo "DB_HOST=${DB_HOST}" >> $GITHUB_ENV
+          echo "DB_USERNAME=${DB_USERNAME}" >> $GITHUB_ENV
+          echo "DB_PORT=${DB_PORT}" >> $GITHUB_ENV
+          echo "DB_PASSWORD=${DB_PASSWORD}" >> $GITHUB_ENV
+          echo "DB_SSL_CA_CERT=${DB_SSL_CA_CERT}" >> $GITHUB_ENV
+          echo "JWT_SECRET=${JWT_SECRET}" >> $GITHUB_ENV
+          echo "JWT_EXPIRES_IN=${JWT_EXPIRES_IN}" >> $GITHUB_ENV
+          echo "PORT=${PORT}" >> $GITHUB_ENV
+          echo "AZURE_BLOB_CONTAINER_NAME=${AZURE_BLOB_CONTAINER_NAME}" >> $GITHUB_ENV
+          echo "AZURE_STORAGE_CONNECTION_STRING=${AZURE_STORAGE_CONNECTION_STRING}" >> $GITHUB_ENV
+          echo "AZURE_ACCOUNT_NAME=${AZURE_ACCOUNT_NAME}" >> $GITHUB_ENV
+          echo "AZURE_ACCOUNT_KEY=${AZURE_ACCOUNT_KEY}" >> $GITHUB_ENV
+          echo "AZURE_SERVICE_BUS_QUEUE_NAMESPACE=${AZURE_SERVICE_BUS_QUEUE_NAMESPACE}" >> $GITHUB_ENV
+          echo "AZURE_SERVICE_BUS_QUEUE_CONNECTION_STRING=${AZURE_SERVICE_BUS_QUEUE_CONNECTION_STRING}" >> $GITHUB_ENV
+
+      - name: Print env variables
+        run: |
+          echo "DB_TYPE=$DB_TYPE" 
+          echo "DB_DATABASE=$DB_DATABASE"
+          echo "DB_HOST=$DB_HOST"
+          echo "DB_USERNAME=$DB_USERNAME"
+          echo "DB_PORT=$DB_PORT"
+          echo "DB_PASSWORD=$DB_PASSWORD"
+          echo "DB_SSL_CA_CERT=$DB_SSL_CA_CERT"
+          echo "JWT_SECRET=$JWT_SECRET"
+          echo "JWT_EXPIRES_IN=$JWT_EXPIRES_IN"
+          echo "PORT=$PORT"
+          echo "AZURE_SERVICE_BUS_QUEUE_NAMESPACE=$AZURE_SERVICE_BUS_QUEUE_NAMESPACE"
+          echo "AZURE_SERVICE_BUS_QUEUE_CONNECTION_STRING=$AZURE_SERVICE_BUS_QUEUE_CONNECTION_STRING"
+
+      - uses: actions/setup-node@v3
+        with:
+          node-version: '16'
+
+      - uses: azure/docker-login@v1
+        with:
+          login-server: ${{ secrets.AZURE_CONTAINER_REGISTRY_LOGIN_SERVER_DEV }}
+          username: ${{ secrets.AZURE_CONTAINER_REGISTRY_USERNAME_DEV }}
+          password: ${{ secrets.AZURE_CONTAINER_REGISTRY_PASSWORD_DEV }}
+
+      - name: Build and push Docker image (Development)
+        run: |
+          docker build -t ${{ secrets.AZURE_CONTAINER_REGISTRY_LOGIN_SERVER_DEV }}/chat:${{ github.sha }} \
+          --build-arg DB_TYPE="${DB_TYPE}" \
+          --build-arg DB_DATABASE="${DB_DATABASE}" \
+          --build-arg DB_HOST="${DB_HOST}" \
+          --build-arg DB_USERNAME="${DB_USERNAME}" \
+          --build-arg DB_PORT="${DB_PORT}" \
+          --build-arg DB_PASSWORD="${DB_PASSWORD}" \
+          --build-arg DB_SSL_CA_CERT="${DB_SSL_CA_CERT}" \
+          --build-arg JWT_SECRET="${JWT_SECRET}" \
+          --build-arg JWT_EXPIRES_IN="${JWT_EXPIRES_IN}" \
+          --build-arg PORT="${PORT}" \
+          --build-arg AZURE_SERVICE_BUS_QUEUE_NAMESPACE="${AZURE_SERVICE_BUS_QUEUE_NAMESPACE}" \
+          --build-arg AZURE_SERVICE_BUS_QUEUE_CONNECTION_STRING="${AZURE_SERVICE_BUS_QUEUE_CONNECTION_STRING}" \
+          .
+          docker push ${{ secrets.AZURE_CONTAINER_REGISTRY_LOGIN_SERVER_DEV }}/chat:${{ github.sha }}
+          docker build -t ${{ secrets.AZURE_CONTAINER_REGISTRY_LOGIN_SERVER_DEV }}/chat:latest \
+          --build-arg DB_TYPE="${DB_TYPE}" \
+          --build-arg DB_DATABASE="${DB_DATABASE}" \
+          --build-arg DB_HOST="${DB_HOST}" \
+          --build-arg DB_USERNAME="${DB_USERNAME}" \
+          --build-arg DB_PORT="${DB_PORT}" \
+          --build-arg DB_PASSWORD="${DB_PASSWORD}" \
+          --build-arg DB_SSL_CA_CERT="${DB_SSL_CA_CERT}" \
+          --build-arg JWT_SECRET="${JWT_SECRET}" \
+          --build-arg JWT_EXPIRES_IN="${JWT_EXPIRES_IN}" \
+          --build-arg PORT="${PORT}" \
+          --build-arg AZURE_SERVICE_BUS_QUEUE_NAMESPACE="${AZURE_SERVICE_BUS_QUEUE_NAMESPACE}" \
+          --build-arg AZURE_SERVICE_BUS_QUEUE_CONNECTION_STRING="${AZURE_SERVICE_BUS_QUEUE_CONNECTION_STRING}" \
+          .
+          docker push ${{ secrets.AZURE_CONTAINER_REGISTRY_LOGIN_SERVER_DEV }}/chat:latest
+
+  deploy-dev:
+    runs-on: ubuntu-latest
+    needs: build-dev
+    if: github.ref_name == 'pipeline'
+
+    steps:
+      - uses: actions/setup-node@v3
+        with:
+          node-version: '16'
+
+      - name: Set up Python and Azure CLI
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.x'
+
+      - name: Login to Azure
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS_DEV }}
+
+      - uses: azure/docker-login@v1
+        with:
+          login-server: ${{ vars.AZURE_CONTAINER_REGISTRY_LOGIN_SERVER_DEV }}
+          username: ${{ vars.AZURE_CONTAINER_REGISTRY_USERNAME_DEV }}
+          password: ${{ secrets.AZURE_CONTAINER_REGISTRY_PASSWORD_DEV }}
+
+      - name: Setup kubectl
+        uses: azure/setup-kubectl@v3
+        with:
+          version: 'latest'
+        id: install
+
+      - uses: azure/aks-set-context@v3
+        with:
+          resource-group: scoop-dev-rg
+          cluster-name: scoop-dev-cluster
+
+      - name: Checkout repository
+        uses: actions/checkout@v3
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Substitute environment variables in k8s config
+        run: |
+          export PORT=${{ vars.PORT_DEV }}
+          export IMAGE_TAG=${{ github.sha }}
+          export CONTAINER_REGISTRY=${{ vars.AZURE_CONTAINER_REGISTRY_LOGIN_SERVER_DEV }}
+          export PUBLIC_IP=${{ vars.AZURE_PUBLIC_IP_DEV }}
+          touch k8/k8.yml
+          envsubst < k8/k8.yml.template > k8/k8.yml
+
+      - name: Echo contents of k8.yml
+        run: cat k8/k8.yml
+
+      - name: Deploy to AKS
+        id: deploy-aks
+        uses: Azure/k8s-deploy@v4
+        with:
+          namespace: scoop-dev-ingress-controlled-namespace
+          images: ${{ vars.AZURE_CONTAINER_REGISTRY_LOGIN_SERVER_DEV }}/chat:${{ github.sha }}
+          manifests: |
+            k8/k8.yml
