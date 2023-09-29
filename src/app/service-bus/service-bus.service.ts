@@ -6,14 +6,13 @@ import { ConfigService } from '@nestjs/config';
 export class ServiceBusService {
   private sbClient: ServiceBusClient;
   private sender: ServiceBusSender;
-  private configService: ConfigService;
 
-  constructor() {
+  constructor(private configService: ConfigService) {
     this.sbClient = new ServiceBusClient(
-      this.configService.get('serviceBusQueue').connectionString,
+      this.configService.get('azure').serviceBusQueue.connectionString,
     );
     this.sender = this.sbClient.createSender(
-      this.configService.get('serviceBusQueue').namespace,
+      this.configService.get('azure').serviceBusQueue.namespace,
     );
   }
 

@@ -15,15 +15,15 @@ export default (): {
   if (!process.env.DB_PORT) {
     throw new Error('DB_PORT is not defined');
   }
-  if (!process.env.DB_USER) {
+  if (!process.env.DB_USERNAME) {
     throw new Error('DB_USER is not defined');
   }
   if (!process.env.DB_PASSWORD) {
     throw new Error('DB_PASSWORD is not defined');
   }
-  if (!process.env.DB_NAME) {
-    throw new Error('DB_NAME is not defined');
-  }
+  // if (!process.env.DB_NAME) {
+  //   throw new Error('DB_NAME is not defined');
+  // }
   return {
     typeorm: {
       type: 'postgres',
@@ -31,9 +31,9 @@ export default (): {
       host: process.env.DB_HOST,
       port: parseInt(process.env.DB_PORT),
       entities: [Message, ConnectedUsers, UserChatDetails],
-      username: process.env.DB_USER,
+      username: process.env.DB_USERNAME,
       password: process.env.DB_PASSWORD,
-      database: process.env.DB_NAME,
+      // database: process.env.DB_NAME,
       ssl: {
         rejectUnauthorized: false,
         ca: process.env.DB_SSL_CA_CERT,
