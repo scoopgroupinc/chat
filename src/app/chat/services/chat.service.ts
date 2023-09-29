@@ -6,11 +6,12 @@ import { IUserPayload } from 'src/app/auth/@types/IUserPayload';
 import { InjectLogger } from 'src/app/logger/decorators/inject-logger.decorator';
 import { Logger } from 'src/app/logger/logger.service';
 import { UserStatusTypeForChat } from '../@types/UserStatusTypeForChat';
-import { MessageRepository } from '../repositories/message.repository';
 import { ConnectedUsersService } from './connected-users.service';
 import { NotificationService } from './notification.service';
 import { SocketService } from './socket.service';
 import { UserChatDetailsService } from './user-chat.service';
+import { Message } from '../entities/message';
+import { Repository } from 'typeorm';
 
 // TODO: We will also need Users Service so that we can get match List
 @Injectable()
@@ -20,12 +21,12 @@ export class ChatService {
     private connectedUsersService: ConnectedUsersService,
     private userChatDetailsService: UserChatDetailsService,
     private notificationService: NotificationService,
-    @InjectRepository(MessageRepository)
-    private messageRepository: MessageRepository,
     @InjectLogger(ChatService) private logger: Logger,
+    @InjectRepository(Message) private messageRepository: Repository<Message>,
   ) {}
 
   async addMessage(payload): Promise<string> {
+    console.log('addMessage', payload);
     //todo: check if this is a match
     this.logger.debug(this.addMessage.name, `payload: ${payload}`);
     const chatDetails = await this.userChatDetailsService.getDetailsForChat(
@@ -39,7 +40,7 @@ export class ChatService {
       );
     }
     payload.senderID = payload.userID;
-    const message = await this.messageRepository.addMessageToDb(payload);
+    const message = await this.messageRepository.save(payload);
     const socketDetails = await this.connectedUsersService.getUserSocketId(
       payload.receiverID,
     );
@@ -74,22 +75,22 @@ export class ChatService {
     return { user, checkedUser };
   }
 
-  async getChatMessages(
-    fromDate: Date,
-    toDate: Date,
-    page: number,
-    ofUserId: string,
-    user: IUserPayload,
-  ) {
-    console.log(ofUserId, user);
-    return await this.messageRepository.getChatMessages(
-      fromDate,
-      toDate,
-      page,
-      ofUserId,
-      user,
-    );
-  }
+  // async getChatMessages(
+  //   fromDate: Date,
+  //   toDate: Date,
+  //   page: number,
+  //   ofUserId: string,
+  //   user: IUserPayload,
+  // ) {
+  //   console.log(ofUserId, user);
+  //   return await this.messageRepository.getChatMessages(
+  //     fromDate,
+  //     toDate,
+  //     page,
+  //     ofUserId,
+  //     user,
+  //   );
+  // }
 
   async getUserConversationList(userID: string) {
     this.logger.debug(this.getUserConversationList.name, `userID: ${userID}`);
@@ -117,20 +118,20 @@ export class ChatService {
     return await this.userChatDetailsService.deleteUserChat(ofUserId, user);
   }
 
-  async deleteMessage(messageId: string, user: IUserPayload) {
-    this.logger.debug(
-      this.deleteMessage.name,
-      `messageId: ${messageId}, user: ${user}`,
-    );
-    const message = await this.messageRepository.deleteMessage(messageId, user);
-    const socketDetails = await this.connectedUsersService.getUserSocketId(
-      message.receiverID,
-    );
-    if (!socketDetails?.socketId) return null;
-    this.socketService.server
-      .to(socketDetails.socketId)
-      .emit('deletedMessage', message);
+  // async deleteMessage(messageId: string, user: IUserPayload) {
+  //   this.logger.debug(
+  //     this.deleteMessage.name,
+  //     `messageId: ${messageId}, user: ${user}`,
+  //   );
+  //   const message = await this.messageRepository.deleteMessage(messageId, user);
+  //   const socketDetails = await this.connectedUsersService.getUserSocketId(
+  //     message.receiverID,
+  //   );
+  //   if (!socketDetails?.socketId) return null;
+  //   this.socketService.server
+  //     .to(socketDetails.socketId)
+  //     .emit('deletedMessage', message);
 
-    return 'message deleted';
-  }
+  //   return 'message deleted';
+  // }
 }

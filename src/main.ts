@@ -33,6 +33,7 @@ async function bootstrap() {
   const document = SwaggerModule.createDocument(app, swaggerConfig);
   SwaggerModule.setup('api/chat/docs', app, document);
   await app.listen(process.env.PORT);
+  console.log(`Application is running on: ${await app.getUrl()}`);
   if (isTest) {
     setTimeout(() => {
       console.log('App started and exited successfully');

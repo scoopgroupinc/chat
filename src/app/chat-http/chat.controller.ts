@@ -33,22 +33,21 @@ export class ChatController {
      If one is provided then API will return ${config.defaultNoOfMessageToSend} message within range`,
     summary: 'Get chat message of user with other user',
   })
-  public async getChat(
-    @Query('fromDate', ParseDatePipe) fromDate: Date | null,
-    @Query('toDate', ParseDatePipe) toDate: Date | null,
-    @Query('page') page: number | null,
-    @Param('ofUserId') ofUserId: string,
-    @GetUser() user: IUserPayload,
-  ): Promise<any> {
-    return await this.chatService.getChatMessages(
-      fromDate,
-      toDate,
-      page,
-      ofUserId,
-      user,
-    );
-  }
-
+  // public async getChat(
+  //   @Query('fromDate', ParseDatePipe) fromDate: Date | null,
+  //   @Query('toDate', ParseDatePipe) toDate: Date | null,
+  //   @Query('page') page: number | null,
+  //   @Param('ofUserId') ofUserId: string,
+  //   @GetUser() user: IUserPayload,
+  // ): Promise<any> {
+  //   return await this.chatService.getChatMessages(
+  //     fromDate,
+  //     toDate,
+  //     page,
+  //     ofUserId,
+  //     user,
+  //   );
+  // }
   @Get('/chat/:userId')
   @ApiTags('chats')
   @ApiOperation({
@@ -83,7 +82,7 @@ export class ChatController {
     @Param('messageId') messageId: string,
     @GetUser() user: IUserPayload,
   ) {
-    return await this.chatService.deleteMessage(messageId, user);
+    // return await this.chatService.deleteMessage(messageId, user);
   }
 
   @Patch('/user/:status')
