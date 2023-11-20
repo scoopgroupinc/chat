@@ -61,10 +61,12 @@ export class MessageRepository extends AbstractRepository<Message> {
 
   async deleteMessage(messageId: string, user: IUserPayload) {
     const message = await this.repository.findOne({
-      id: messageId,
-      senderID: user.userId,
+      where: {
+        id: messageId,
+        senderID: user.userId,
+      }
     });
     if (!message) throw new Error('message not found');
-    return await this.manager.save({ ...message, deletedAt: Date.now() });
+    return await this.manager.save({ ...message, deletedAt: new Date() }); // Use new Date() instead of Date.now() for consistency with Date objects
   }
 }
