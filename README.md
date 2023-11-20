@@ -29,32 +29,32 @@
 ## Installation
 
 ```bash
-$ yarn install
+yarn install
 ```
 
 ## Running the app
 ```bash
 # development
-$ yarn start
+yarn start
 
 # watch mode
-$ yarn start:dev
+yarn start:dev
 
 # production mode
-$ yarn start:prod
+yarn start:prod
 ```
 
 ## Test
 
 ```bash
 # unit tests
-$ yarn test
+yarn test
 
 # e2e tests
-$ yarn test:e2e
+yarn test:e2e
 
 # test coverage
-$ yarn test:cov
+yarn test:cov
 ```
 
 ## API Docs
