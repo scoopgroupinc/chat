@@ -34,34 +34,45 @@ export class ConnectedUsersService {
     await this.connectedUserRepo.delete({ socketId: socketId });
   }
 
-  public async addUser(userID: string, socketID: string): Promise<ConnectedUsers> {
-    this.logger.debug(this.addUser.name, `userID: ${userID}, socketID: ${socketID}`);
-  
-    const ec2InstanceID = 'abcdxyz'; // TODO: get appropriate EC2 instance ID
-    let connectedUser = await this.connectedUserRepo.findOne({ where: { userId: userID } });
-  
+  public async addUser(
+    userID: string,
+    socketID: string,
+  ): Promise<ConnectedUsers> {
+    this.logger.debug(
+      this.addUser.name,
+      `userID: ${userID}, socketID: ${socketID}`,
+    );
+    // TODO: get appropriate EC2 instance ID
+
+    const ec2InstanceID = 'abcdxyz';
+    const connectedUser = await this.connectedUserRepo.findOne({
+      userId: userID,
+    });
     if (!connectedUser) {
-      connectedUser = this.connectedUserRepo.create({
-        userId: userID,
-        socketId: socketID,
-        ec2InstanceId: ec2InstanceID,
-      });
-    } else {
-      connectedUser.socketId = socketID;
+      const newConnectedUser = new ConnectedUsers(
+        userID,
+        socketID,
+        ec2InstanceID,
+      );
+      return await this.connectedUserRepo.save(newConnectedUser);
     }
-  
-    return await this.connectedUserRepo.save(connectedUser);
+    await this.connectedUserRepo.update(
+      { userId: userID },
+      { socketId: socketID },
+    );
   }
-  
+
   public async getUserSocketId(userId: string): Promise<ConnectedUsers> {
-    return await this.connectedUserRepo.findOne({ where: { userId } });
+    return await this.connectedUserRepo.findOne({ userId });
   }
 
   public async updateUserStatus(
     status: UserStatusTypeForChat,
     user: IUserPayload,
   ) {
-    const connectedUser = await this.connectedUserRepo.findOne({ where: { userId: user.userId } });
+    const connectedUser = await this.connectedUserRepo.findOne({
+      userId: user.userId,
+    });
     let response;
     if (status.toLowerCase() === UserStatusTypeForChat.ONLINE.toLowerCase()) {
       response = await this.connectedUserRepo.save({
@@ -79,7 +90,7 @@ export class ConnectedUsersService {
   }
 
   public async getUserDatails(userId: string) {
-    const user = await this.connectedUserRepo.findOne({ where: { userId } });
+    const user = await this.connectedUserRepo.findOne({ userId });
     return user?.lastActive ?? undefined;
   }
 }

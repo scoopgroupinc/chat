@@ -32,13 +32,7 @@ export class UserChatDetailsService {
       `userID: ${userID}, toUserID: ${toUserID}`,
     );
 
-    // For FindOneOptions
-    const chat = await this.userChatDetailsRepo.findOne({ 
-      where: { 
-        toUserID: toUserID, 
-        userID 
-      } 
-    });
+    const chat = await this.userChatDetailsRepo.findOne({ userID, toUserID });
     const lastRead = new Date();
     if (chat) {
       return await this.userChatDetailsRepo.save({
@@ -58,13 +52,7 @@ export class UserChatDetailsService {
 
   public async getUserConversationList(userID: string) {
     this.logger.debug(this.getUserConversationList.name, `userID: ${userID}`);
-    // For FindManyOptions
-    return await this.userChatDetailsRepo.find({ 
-      where: { 
-        userID, 
-        lastDeleted: null 
-      } 
-    });
+    return await this.userChatDetailsRepo.find({ userID, lastDeleted: null });
   }
 
   public async deleteUserChat(ofUserId: string, user: IUserPayload) {
@@ -73,21 +61,15 @@ export class UserChatDetailsService {
       `user: ${user}`,
       `ofUserId: ${ofUserId}`,
     );
-  
+
     const userChat = await this.userChatDetailsRepo.findOne({
-      where: {
-        toUserID: ofUserId, // Use 'ofUserId' here
-        userID: user.userId,
-      },
+      toUserID: ofUserId,
+      userID: user.userId,
     });
-  
-    if (!userChat) {
-      throw new Error('User chat not found');
-    }
-  
+
     await this.userChatDetailsRepo.save({
       ...userChat,
-      lastDeleted: new Date(), // Use new Date() instead of Date.now() for consistency with Date objects
+      lastDeleted: Date.now(),
     });
     return 'conversation deleted';
   }
