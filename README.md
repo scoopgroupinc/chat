@@ -29,32 +29,32 @@
 ## Installation
 
 ```bash
-$ yarn install
+$ npm install
 ```
 
 ## Running the app
 ```bash
 # development
-$ yarn start
+$ npm run start
 
 # watch mode
-$ yarn start:dev
+$ npm run start:dev
 
 # production mode
-$ yarn start:prod
+$ npm run start:prod
 ```
 
 ## Test
 
 ```bash
 # unit tests
-$ yarn test
+$ npm run test
 
 # e2e tests
-$ yarn test:e2e
+$ npm run test:e2e
 
 # test coverage
-$ yarn test:cov
+$ npm run test:cov
 ```
 
 ## API Docs
@@ -66,10 +66,10 @@ If you run server locally goto: `http://localhost:{PORT}/api/chat/docs/`
 
 ## Local Setup
 
-1. Run `yarn install `
+1. Run `npm install `
 2. make sure your IP address has been added to Instaclustr
 3. ensure you .env.dev has the same variables as .env.sample
-4. Run `yarn watch:dev`
+4. Run `npm run watch:dev`
 
 ## Support
 
