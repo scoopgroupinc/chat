@@ -3,7 +3,7 @@
 # Please see the documentation for all configuration options:
 # https://docs.github.com/github/administering-a-repository/configuration-options-for-dependency-updates
 
-# Basic set up for three package managers
+# Basic set up for two package managers
 
 version: 2
 updates:
@@ -17,12 +17,6 @@ updates:
 
   # Maintain dependencies for npm
   - package-ecosystem: "npm"
-    directory: "/"
-    schedule:
-      interval: "weekly"
-
-  # Maintain dependencies for yarn
-  - package-ecosystem: "yarn"
     directory: "/"
     schedule:
       interval: "weekly"
